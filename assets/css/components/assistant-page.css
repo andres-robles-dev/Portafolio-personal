@@ -1,0 +1,97 @@
+body.assistant-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.assistant-main {
+    width: min(1040px, 100%);
+    margin: 0 auto;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 5.1rem 1.1rem 0.82rem;
+    overflow: hidden;
+}
+
+.assistant-chat-shell {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0.36rem 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 0.64rem;
+    overflow: hidden;
+}
+
+.assistant-chat-title {
+    justify-self: center;
+    align-self: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: clamp(1.22rem, 2vw, 1.72rem);
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.95);
+    transition: font-size var(--dur-med) var(--ease-soft), opacity var(--dur-med) var(--ease-soft);
+}
+
+.assistant-chat-title.is-collapsed {
+    font-size: clamp(0.74rem, 0.96vw, 0.88rem);
+    opacity: 0.7;
+}
+
+.assistant-chat-shell[data-chat-state="idle"] {
+    align-content: center;
+    justify-items: center;
+    grid-template-rows: auto auto;
+    gap: 1.02rem;
+}
+
+.assistant-chat-shell[data-chat-state="idle"] .assistant-chat-form {
+    width: min(760px, 100%);
+}
+
+.assistant-chat-shell[data-chat-state="active"] {
+    align-content: stretch;
+    justify-items: stretch;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.assistant-chat-messages[hidden] {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .assistant-main {
+        padding: 4.85rem 0.88rem 0.68rem;
+    }
+
+    .assistant-chat-shell {
+        gap: 0.56rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .assistant-main {
+        padding: 4.3rem 0.56rem 0.46rem;
+    }
+
+    .assistant-chat-shell {
+        gap: 0.46rem;
+    }
+
+    .assistant-chat-shell[data-chat-state="idle"] {
+        gap: 0.64rem;
+    }
+
+    .assistant-chat-shell[data-chat-state="idle"] .assistant-chat-form {
+        width: 100%;
+    }
+
+    .assistant-chat-title {
+        font-size: clamp(0.9rem, 4.4vw, 1.1rem);
+    }
+}

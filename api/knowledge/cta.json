@@ -1,0 +1,37 @@
+{
+    "document": "cta",
+    "version": 1,
+    "priority": "high",
+    "blocks": [
+        {
+            "id": "qualification-questions",
+            "title": "Preguntas minimas de cualificacion",
+            "keywords": ["brief", "preguntas", "datos", "cualificar", "lead"],
+            "content": "Antes de cerrar la cotizacion pedir: nombre, email valido, tipo de proyecto, problema actual, objetivo principal y plazo estimado."
+        },
+        {
+            "id": "cta-primary",
+            "title": "CTA principal",
+            "keywords": ["cta", "propuesta", "avanzar", "siguiente paso"],
+            "content": "CTA principal: Cuentame tu proyecto y te preparo una propuesta clara por fases."
+        },
+        {
+            "id": "cta-contact",
+            "title": "Canales de contacto",
+            "keywords": ["whatsapp", "telefono", "email", "contacto"],
+            "content": "Canales de contacto: WhatsApp/telefono 640157492 y email drezyroble09@gmail.com. Compromiso de respuesta: menos de 24h habiles."
+        },
+        {
+            "id": "cta-scope-rule",
+            "title": "Regla de cierre comercial",
+            "keywords": ["cerrar", "propuesta", "llamada", "agenda"],
+            "content": "Si hay informacion minima suficiente, enviar solicitud de cotizacion a Andres y avisar que el contacto con propuesta detallada se hace por WhatsApp o email."
+        },
+        {
+            "id": "pricing-answer-rule",
+            "title": "Regla ante preguntas de precio",
+            "keywords": ["precio", "presupuesto", "coste", "cuanto"],
+            "content": "Si preguntan precios, no dar numeros en el chat. Indicar que al confirmar la informacion de cotizacion, Andres enviara el detalle real."
+        }
+    ]
+}

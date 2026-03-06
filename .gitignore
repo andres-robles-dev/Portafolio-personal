@@ -1,0 +1,3 @@
+api/.env
+storage/contacts.ndjson
+storage/chat-sessions-v2/*.json

@@ -1,0 +1,874 @@
+:root {
+    --bg: #000;
+    --panel: #000;
+    --fg: #f2f2f2;
+    --fg-muted: rgba(242, 242, 242, 0.75);
+    --fg-soft: rgba(242, 242, 242, 0.52);
+    --line: transparent;
+    --line-dark: transparent;
+    --radius-xl: 0;
+    --radius-lg: 0;
+    --display-font: "Space Mono", monospace;
+    --base-font: "Space Mono", monospace;
+}
+
+html,
+body {
+    background: #000;
+}
+
+body {
+    font-family: var(--base-font);
+    color: var(--fg);
+    letter-spacing: 0.015em;
+    background-image: none;
+}
+
+body,
+body * {
+    font-family: var(--base-font);
+}
+
+.font-mono,
+.font-display,
+.logo,
+.nav-link,
+.nav-panel a,
+.hero-chat-title,
+.hero-chat-status,
+.section-label,
+.section-label-dark,
+.project-tag,
+.detail-tag,
+.detail-pill,
+.detail-btn,
+.project-modal-btn,
+.project-modal-tag,
+.project-modal-meta,
+.contact-field span,
+.contact-submit,
+.contact-action-main,
+.contact-action-secondary,
+.hero-action,
+.hero-chat-prompt,
+.hero-chat-send {
+    font-family: var(--base-font);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.main-nav,
+.nav-links,
+.nav-link,
+.menu-toggle,
+.nav-panel,
+.nav-panel a,
+.hero-intro,
+.hero-center,
+.column-right,
+.about-container,
+.experience-grid,
+.experience-card,
+.project-item,
+.project-visual,
+.contact-form,
+.assistant-intro,
+.assistant-chat-wrap,
+.detail-hero,
+.detail-block,
+.detail-gallery-card,
+.detail-footer-actions,
+.project-modal-dialog,
+.project-modal-side,
+.project-modal-media,
+.project-modal-story-media,
+.hero-chat,
+.hero-chat-header,
+.hero-chat-form,
+.hero-chat-message,
+.project-modal-header,
+.detail-pill,
+.detail-tag,
+.project-tag,
+.hero-action,
+.contact-btn,
+.contact-action-main,
+.contact-action-secondary,
+.contact-submit,
+.detail-btn,
+.project-modal-btn,
+.hero-chat-prompt,
+.hero-chat-send,
+.hero-chat-input,
+.contact-field input,
+.contact-field select,
+.contact-field textarea,
+.project-modal-close,
+.project-modal-meta span,
+.project-modal-deliverable,
+.detail-deliverable,
+.hero-intro-foot,
+.hero-panel-head,
+.footer,
+.method-layout,
+.method-timeline,
+.method-step,
+.method-intro {
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none;
+}
+
+.main-nav,
+.nav-links,
+.nav-panel,
+.menu-toggle,
+.hero-section,
+.about-section,
+.experience-section,
+.projects-section,
+.contact-section,
+.footer,
+.assistant-page,
+.product-detail-main,
+.hero-intro,
+.hero-center,
+.column-right,
+.about-container,
+.method-step,
+.project-item,
+.contact-form,
+.assistant-intro,
+.assistant-chat-wrap,
+.detail-hero,
+.detail-block,
+.detail-gallery-card,
+.detail-footer-actions,
+.project-modal-dialog,
+.project-modal-side,
+.hero-chat,
+.hero-chat-header,
+.hero-chat-form,
+.project-modal-header,
+.project-modal-media,
+.project-modal-story-media,
+.project-visual,
+.detail-not-found {
+    background: transparent !important;
+}
+
+.logo,
+.main-nav.is-dark .logo,
+.nav-link,
+.nav-panel a,
+.hero-title,
+.hero-panel-title,
+.hero-value-title,
+.about-big,
+.section-title,
+.project-info h3,
+.contact-title,
+.assistant-title,
+.detail-title,
+.project-modal-title,
+.detail-not-found h1,
+.hero-chat-title,
+.hero-chat-status,
+.hero-chat-message.assistant,
+.hero-chat-input,
+.contact-field input,
+.contact-field select,
+.contact-field textarea,
+.project-arrow,
+.project-modal-summary,
+.project-modal-subtitle,
+.project-modal-deliverable,
+.detail-summary p,
+.detail-subtitle,
+.assistant-copy,
+.contact-subtitle,
+.project-info p,
+.experience-description,
+.about-side p,
+.hero-value-copy,
+.hero-subtitle {
+    color: var(--fg);
+}
+
+.hero-panel-kicker,
+.hero-note,
+.hero-availability,
+.section-label,
+.section-label-dark,
+.assistant-kicker,
+.detail-kicker,
+.project-number,
+.project-modal-kicker,
+.project-modal-side-title,
+.detail-block h2,
+.contact-field span,
+.footer p,
+.social-link,
+.project-modal-hint,
+.contact-feedback {
+    color: var(--fg-soft);
+}
+
+.main-nav {
+    backdrop-filter: none;
+    background: transparent !important;
+}
+
+.nav-links {
+    padding: 0;
+    gap: 0.72rem;
+}
+
+.nav-link {
+    padding: 0.42rem 0;
+    border-radius: 0;
+    opacity: 0.62;
+    font-size: 0.78rem;
+    letter-spacing: 0.075em;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    opacity: 1;
+    background: transparent;
+    transform: none;
+}
+
+.nav-link.is-active {
+    opacity: 1;
+    color: #fff;
+    text-decoration: none;
+    background: transparent;
+}
+
+.nav-panel {
+    backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.95) !important;
+}
+
+.nav-panel a {
+    opacity: 0.76;
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+}
+
+.nav-panel a:hover,
+.nav-panel a:focus-visible,
+.nav-panel a.is-active {
+    opacity: 1;
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu-line {
+    background: #fff;
+}
+
+.project-item::before,
+.column-2::after {
+    display: none !important;
+}
+
+.project-modal-media,
+.project-modal-media:hover,
+.project-arrow,
+.hero-action:hover,
+.hero-action:focus-visible,
+.contact-btn:hover,
+.contact-btn:focus-visible,
+.contact-action-main:hover,
+.contact-action-main:focus-visible,
+.contact-action-secondary:hover,
+.contact-action-secondary:focus-visible,
+.contact-submit:hover,
+.contact-submit:focus-visible,
+.detail-btn:hover,
+.detail-btn:focus-visible,
+.project-modal-btn:hover,
+.project-modal-btn:focus-visible,
+.hero-chat-prompt:hover,
+.hero-chat-prompt:focus-visible,
+.hero-chat-send:hover,
+.hero-chat-send:focus-visible,
+.project-modal-close:hover,
+.project-modal-close:focus-visible {
+    transform: none !important;
+    filter: none;
+}
+
+.hero-action,
+.contact-btn,
+.contact-action-main,
+.contact-action-secondary,
+.contact-submit,
+.detail-btn,
+.project-modal-btn,
+.hero-chat-prompt,
+.hero-chat-send,
+.project-modal-close {
+    color: var(--fg);
+    background: transparent;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.hero-action-primary,
+.contact-action-main,
+.contact-submit,
+.detail-btn-primary,
+.project-modal-btn-primary,
+.hero-chat-send {
+    background: transparent;
+    color: #fff;
+}
+
+.hero-action-primary:hover,
+.hero-action-primary:focus-visible,
+.contact-action-main:hover,
+.contact-action-main:focus-visible,
+.contact-submit:hover,
+.contact-submit:focus-visible,
+.detail-btn-primary:hover,
+.detail-btn-primary:focus-visible,
+.project-modal-btn-primary:hover,
+.project-modal-btn-primary:focus-visible,
+.hero-chat-send:hover,
+.hero-chat-send:focus-visible {
+    color: rgba(242, 242, 242, 0.76);
+    background: transparent;
+}
+
+.hero-chat {
+    background: transparent !important;
+}
+
+.hero-chat-message.assistant {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.hero-chat-message.user {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #050505;
+}
+
+.status-dot {
+    background: #f1f1f1;
+    box-shadow: none;
+}
+
+.hero-chat-input,
+.contact-field input,
+.contact-field select,
+.contact-field textarea {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.hero-chat-input::placeholder,
+.contact-field input::placeholder,
+.contact-field textarea::placeholder {
+    color: rgba(242, 242, 242, 0.5);
+}
+
+.hero-chat-input:focus,
+.contact-field input:focus,
+.contact-field select:focus,
+.contact-field textarea:focus {
+    background: #fff;
+    color: #000;
+    caret-color: #000;
+    box-shadow: none;
+}
+
+.contact-field input:focus::placeholder,
+.contact-field textarea:focus::placeholder {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.project-tag,
+.detail-tag,
+.detail-pill,
+.project-modal-tag,
+.project-modal-meta span,
+.project-number {
+    background: transparent;
+    border-radius: 0;
+    color: var(--fg-soft);
+}
+
+.project-modal {
+    backdrop-filter: none;
+}
+
+.project-modal-backdrop {
+    background: #000;
+}
+
+.project-modal-dialog,
+.project-modal-side,
+.project-modal-media,
+.project-modal-story-media,
+.project-modal-tag,
+.project-modal-meta span {
+    background: transparent !important;
+}
+
+.project-modal-btn.is-disabled {
+    opacity: 0.42;
+}
+
+.contact-feedback.is-success {
+    color: rgba(167, 255, 167, 0.95);
+}
+
+.contact-feedback.is-warning {
+    color: rgba(255, 232, 166, 0.96);
+}
+
+.contact-feedback.is-error,
+.contact-field-error {
+    color: rgba(255, 154, 154, 0.95);
+}
+
+.center-cover,
+.project-thumb,
+.project-modal-media img,
+.project-modal-story-media img,
+.detail-gallery-card img {
+    filter: grayscale(1) contrast(1.1);
+}
+
+.stagger-in {
+    filter: none;
+    animation-duration: 520ms;
+}
+
+@keyframes staggerIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: none;
+    }
+}
+
+.reveal-exp,
+.reveal-contact {
+    filter: none;
+}
+
+.reveal-about,
+.reveal-exp,
+.reveal-projects,
+.reveal-contact {
+    transition-duration: 620ms;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.02rem, 1.18vw, 1.22rem);
+    line-height: 1.62;
+}
+
+.hero-panel-title {
+    font-size: clamp(1.48rem, 2.3vw, 2.1rem);
+    line-height: 0.96;
+}
+
+.hero-panel-meta p {
+    font-size: clamp(0.66rem, 0.8vw, 0.78rem);
+    line-height: 1.26;
+}
+
+.hero-panel-shortcuts span,
+.hero-skill-list li {
+    font-size: clamp(0.66rem, 0.8vw, 0.76rem);
+}
+
+.hero-availability {
+    font-size: clamp(0.66rem, 0.82vw, 0.74rem);
+}
+
+.hero-availability strong {
+    font-size: clamp(1.2rem, 2.1vw, 1.6rem);
+}
+
+.hero-action,
+.contact-btn {
+    font-size: 0.76rem;
+}
+
+.method-step {
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 0 !important;
+    opacity: 0.8;
+    transform: translateX(0) translateY(var(--step-shift, 0px)) scale(calc(1 * var(--step-boost, 1))) !important;
+    transition: opacity var(--dur-med) var(--ease-soft), transform var(--dur-med) var(--ease-soft), border-color var(--dur-med) var(--ease-soft);
+}
+
+.method-step.is-focused,
+.method-step:hover {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.48) !important;
+    transform: translateX(0) translateY(var(--step-shift, 0px)) scale(calc(1 * var(--step-boost, 1))) !important;
+}
+
+.project-item {
+    border: 0 !important;
+}
+
+.project-item.is-linked {
+    border: 0 !important;
+    outline: none;
+}
+
+.method-link {
+    color: rgba(242, 242, 242, 0.72);
+}
+
+.method-link:hover,
+.method-link:focus-visible {
+    color: #fff;
+}
+
+@media (max-width: 1023px) {
+    .main-nav {
+        background: transparent !important;
+    }
+}
+
+/* Unified CMD finish */
+
+::selection {
+    background: #fff;
+    color: #000;
+}
+
+input::selection,
+textarea::selection {
+    background: #000;
+    color: #fff;
+}
+
+a,
+button {
+    letter-spacing: 0.1em;
+}
+
+.hero-action,
+.contact-btn,
+.contact-action-main,
+.contact-action-secondary,
+.contact-submit,
+.project-modal-btn,
+.detail-btn,
+.assistant-chat-send,
+.project-modal-close {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 0;
+}
+
+.hero-action:hover,
+.hero-action:focus-visible,
+.contact-btn:hover,
+.contact-btn:focus-visible,
+.contact-action-main:hover,
+.contact-action-main:focus-visible,
+.contact-action-secondary:hover,
+.contact-action-secondary:focus-visible,
+.contact-submit:hover,
+.contact-submit:focus-visible,
+.project-modal-btn:hover,
+.project-modal-btn:focus-visible,
+.detail-btn:hover,
+.detail-btn:focus-visible,
+.assistant-chat-send:hover,
+.assistant-chat-send:focus-visible,
+.project-modal-close:hover,
+.project-modal-close:focus-visible {
+    color: #fff !important;
+    background: transparent !important;
+}
+
+.contact-field input,
+.contact-field select,
+.contact-field textarea,
+.assistant-chat-input {
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: #fff !important;
+    border: 0 !important;
+    border-radius: 0;
+}
+
+.contact-field input:focus,
+.contact-field select:focus,
+.contact-field textarea:focus,
+.assistant-chat-input:focus {
+    background: #fff !important;
+    color: #000 !important;
+    caret-color: #000;
+    box-shadow: none !important;
+    outline: none;
+}
+
+.contact-field input:focus::placeholder,
+.contact-field textarea:focus::placeholder,
+.assistant-chat-input:focus::placeholder {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.column-right::-webkit-scrollbar-thumb,
+.project-modal-body::-webkit-scrollbar-thumb,
+.project-modal-gallery::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.duck-runner-kicker,
+.duck-runner-overlay-hint,
+.duck-runner-hud {
+    color: var(--fg-soft);
+}
+
+.duck-runner-title,
+.duck-runner-overlay-title,
+.duck-runner-hud strong {
+    color: var(--fg);
+}
+
+.duck-runner-stage {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 0;
+}
+
+@media (min-width: 1200px) {
+    .hero-section {
+        padding: 4.5rem 1.1rem 1rem;
+        gap: 1rem;
+    }
+
+    .hero-intro {
+        padding: 1.1rem 1.15rem;
+    }
+
+    .column-right {
+        padding: 1.15rem 1.1rem;
+        gap: 0.86rem;
+    }
+
+    .hero-title {
+        font-size: clamp(2.6rem, 6.4vw, 5.4rem);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(0.92rem, 1.02vw, 1.08rem);
+        line-height: 1.5;
+    }
+
+    .hero-panel-title {
+        font-size: clamp(1.36rem, 2.05vw, 1.92rem);
+    }
+
+    .hero-panel-meta p {
+        font-size: clamp(0.62rem, 0.72vw, 0.74rem);
+        line-height: 1.34;
+    }
+
+    .hero-panel-shortcuts span,
+    .hero-skill-list li {
+        font-size: clamp(0.62rem, 0.72vw, 0.72rem);
+    }
+
+    .hero-skill-grid {
+        margin-top: clamp(1.4rem, 2.2vw, 2rem);
+        row-gap: 0.72rem;
+        column-gap: 0.88rem;
+    }
+
+    .column-3-bottom {
+        padding-top: 2rem;
+        gap: 0.72rem;
+    }
+
+    .hero-availability {
+        font-size: clamp(0.62rem, 0.74vw, 0.7rem);
+    }
+
+    .hero-availability strong {
+        font-size: clamp(1.12rem, 1.9vw, 1.5rem);
+    }
+
+    .contact-btn {
+        font-size: 0.7rem;
+    }
+
+    .section-header {
+        margin-bottom: 3.2rem;
+    }
+
+    .section-title {
+        font-size: clamp(2.3rem, 5.3vw, 4.8rem);
+    }
+
+    .focus-grid {
+        margin-top: 1.35rem;
+        margin-bottom: 1.8rem;
+        gap: 0.86rem;
+    }
+
+    .focus-title {
+        font-size: clamp(1.12rem, 1.8vw, 1.46rem);
+    }
+
+    .focus-desc {
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .projects-list {
+        gap: 1.35rem;
+    }
+
+    .project-item {
+        padding: 1.18rem 0;
+        gap: 0.88rem;
+    }
+
+    .project-info h3 {
+        font-size: clamp(1.56rem, 2.55vw, 2.5rem);
+    }
+
+    .project-info p {
+        font-size: 0.82rem;
+        line-height: 1.58;
+        max-width: 52ch;
+    }
+
+    .contact-container {
+        width: min(980px, 100%);
+        gap: 0.62rem;
+    }
+
+    .contact-title {
+        font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+    }
+
+    .contact-subtitle {
+        font-size: clamp(0.8rem, 1.02vw, 0.92rem);
+        line-height: 1.42;
+        max-width: 56ch;
+    }
+
+    .contact-actions {
+        gap: 0.28rem;
+    }
+
+    .contact-form {
+        width: min(760px, 100%);
+        padding: 0.3rem 0;
+    }
+
+    .contact-form-grid {
+        gap: 0.52rem;
+    }
+
+    .contact-field span {
+        font-size: 0.56rem;
+    }
+
+    .contact-field input,
+    .contact-field select,
+    .contact-field textarea {
+        padding: 0.54rem 0.62rem;
+        font-size: 0.78rem;
+    }
+
+    .contact-submit {
+        margin-top: 0.38rem;
+        font-size: 0.62rem;
+    }
+
+    .social-links {
+        margin-top: 0.72rem;
+        gap: 1rem;
+    }
+}
+
+/* Micro typography polish */
+
+body {
+    letter-spacing: 0.012em;
+}
+
+.section-label,
+.section-label-dark,
+.hero-panel-kicker,
+.hero-note,
+.project-number,
+.project-modal-kicker,
+.project-modal-side-title,
+.contact-field span,
+.assistant-chat-status,
+.assistant-chat-message-meta {
+    letter-spacing: 0.1em;
+}
+
+.hero-title,
+.hero-panel-title,
+.about-big,
+.section-title,
+.project-info h3,
+.contact-title,
+.project-modal-title,
+.detail-title,
+.assistant-chat-title {
+    line-height: 0.94;
+}
+
+.hero-subtitle,
+.about-side p,
+.focus-desc,
+.project-info p,
+.contact-subtitle,
+.project-modal-summary,
+.project-modal-subtitle,
+.assistant-chat-message {
+    letter-spacing: 0.018em;
+    line-height: 1.5;
+}
+
+.hero-action,
+.contact-btn,
+.contact-action-main,
+.contact-action-secondary,
+.contact-submit,
+.project-modal-btn,
+.detail-btn,
+.assistant-chat-send {
+    letter-spacing: 0.11em;
+}
+
+@media (max-width: 767px) {
+    .hero-title,
+    .section-title,
+    .contact-title,
+    .assistant-chat-title {
+        line-height: 0.96;
+    }
+
+    .hero-subtitle,
+    .contact-subtitle,
+    .assistant-chat-message {
+        line-height: 1.45;
+    }
+}

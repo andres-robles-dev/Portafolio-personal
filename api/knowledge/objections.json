@@ -1,0 +1,25 @@
+{
+    "document": "objections",
+    "version": 1,
+    "priority": "medium",
+    "blocks": [
+        {
+            "id": "objection-investment",
+            "title": "Objecion de inversion",
+            "keywords": ["presupuesto", "caro", "precio", "coste", "dinero", "inversion"],
+            "content": "Si el cliente ve alta la inversion, se recomienda definir una fase inicial mas pequena para avanzar con menos riesgo y medir impacto real."
+        },
+        {
+            "id": "objection-clarity",
+            "title": "Objecion por falta de claridad",
+            "keywords": ["no se", "duda", "necesito ayuda", "no tengo claro"],
+            "content": "Si el cliente no tiene claro lo que necesita, se simplifica en objetivo + plazo + alcance minimo para recomendar la mejor opcion."
+        },
+        {
+            "id": "objection-risk",
+            "title": "Objecion por riesgo",
+            "keywords": ["riesgo", "confianza", "miedo", "garantia"],
+            "content": "Para reducir riesgo se trabaja por hitos y entregables claros, evitando compromisos cerrados sin diagnostico inicial."
+        }
+    ]
+}

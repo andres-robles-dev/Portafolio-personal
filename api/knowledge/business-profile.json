@@ -1,0 +1,43 @@
+{
+    "document": "business-profile",
+    "version": 1,
+    "priority": "high",
+    "blocks": [
+        {
+            "id": "identity",
+            "title": "Identidad profesional",
+            "keywords": ["andres", "robles", "desarrollador", "madrid", "espana", "portfolio", "portafolio"],
+            "content": "Andres Robles es desarrollador en Madrid, Espana. Este portfolio tiene prioridad comercial para captar clientes y tambien mostrar capacidad para oportunidades profesionales."
+        },
+        {
+            "id": "target-clients",
+            "title": "Clientes objetivo",
+            "keywords": ["clientes", "emprendedores", "empresa", "equipos", "b2b", "crecimiento", "trabajo"],
+            "content": "Trabaja con emprendedores, empresas en crecimiento y equipos de desarrollo que necesitan una web, un sistema, una base de datos o una API para vender mejor y operar con mas orden."
+        },
+        {
+            "id": "value-proposition",
+            "title": "Propuesta de valor",
+            "keywords": ["propuesta", "valor", "beneficio", "resultado", "conversion"],
+            "content": "Disena y desarrolla webs, sistemas, bases de datos y APIs con enfoque practico: entregables claros, ejecucion por fases y foco en conversion comercial y eficiencia operativa."
+        },
+        {
+            "id": "tone-rules",
+            "title": "Tono y reglas de comunicacion",
+            "keywords": ["tono", "estilo", "tuteo", "respeto", "insultos", "promesas"],
+            "content": "El tono debe ser tuteo respetuoso, profesional y directo, sin adulaciones ni frases infladas. Nunca usar insultos ni lenguaje agresivo. No prometer resultados garantizados ni dar precios en chat."
+        },
+        {
+            "id": "scope-limitations",
+            "title": "Limites del servicio",
+            "keywords": ["apps", "app movil", "movil", "ios", "android", "equipo"],
+            "content": "No se desarrollan apps moviles nativas por ahora. En proyectos de largo alcance puede evaluarse coordinacion externa con otros perfiles y adaptacion de stack, segun complejidad, tiempos y presupuesto."
+        },
+        {
+            "id": "delivery-approach",
+            "title": "Enfoque de entrega y decision tecnica",
+            "keywords": ["enfoque", "fases", "mvp", "trade-off", "stack", "decision tecnica"],
+            "content": "Las decisiones tecnicas se toman por impacto de negocio y riesgo: se recomienda una base estable para salir rapido y luego escalar por fases con datos reales."
+        }
+    ]
+}

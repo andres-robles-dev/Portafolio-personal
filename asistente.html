@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asistente Web | Andres Robles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/assistant.css?v=20260306-202911" />
+</head>
+
+<body class="assistant-page" data-nav-active="assistant">
+    <nav class="main-nav">
+        <div class="logo">ANDRES ROBLES</div>
+
+        <div class="nav-links font-mono">
+            <a class="nav-link" data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
+            <a class="nav-link" data-nav="about" data-nav-key="about" href="index.html?go=about">ENFOQUE</a>
+            <a class="nav-link" data-nav="method" data-nav-key="method" href="index.html?go=method">MÉTODO</a>
+            <a class="nav-link" data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
+            <a class="nav-link" data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+            <a class="nav-link" data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
+        </div>
+
+        <div class="menu-toggle" aria-label="Abrir menú" role="button" tabindex="0">
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+        </div>
+    </nav>
+
+    <div class="nav-panel font-mono" id="navPanel" aria-hidden="true">
+        <a data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
+        <a data-nav="about" data-nav-key="about" href="index.html?go=about">ENFOQUE</a>
+        <a data-nav="method" data-nav-key="method" href="index.html?go=method">MÉTODO</a>
+        <a data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
+        <a data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+        <a data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
+    </div>
+
+    <main class="assistant-main">
+        <section class="assistant-chat-shell" id="assistantChatShell" data-chat-state="idle" aria-label="Chat de Andro asistente">
+            <h1 class="assistant-chat-title font-display" id="assistantChatTitle">Andro asistente</h1>
+
+            <div class="assistant-chat-messages" id="assistantChatMessages" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
+
+            <p class="assistant-chat-status font-mono" id="assistantChatStatus" role="status" aria-live="polite" hidden></p>
+
+            <form class="assistant-chat-form" id="assistantChatForm" novalidate>
+                <label class="sr-only" for="assistantChatInput">Escribe tu mensaje para Andro asistente</label>
+                <textarea
+                    id="assistantChatInput"
+                    class="assistant-chat-input"
+                    name="message"
+                    rows="1"
+                    placeholder="Escribe tu mensaje..."
+                    maxlength="500"
+                    required
+                ></textarea>
+                <button type="submit" class="assistant-chat-send font-mono" id="assistantChatSend">Enviar</button>
+            </form>
+        </section>
+    </main>
+
+    <script type="module" src="assets/js/static-nav.js?v=20260306-202911"></script>
+    <script type="module" src="assets/js/assistant.js?v=20260306-202911"></script>
+</body>
+
+</html>

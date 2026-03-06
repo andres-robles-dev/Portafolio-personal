@@ -1,0 +1,16 @@
+RewriteEngine On
+Options -Indexes
+
+<IfModule mod_headers.c>
+Header always unset X-Powered-By
+</IfModule>
+
+RewriteRule "(^|/)\." - [F]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^chat$ chat.php [L,QSA]
+RewriteRule ^contact$ contact.php [L,QSA]
+RewriteRule ^health$ health.php [L,QSA]

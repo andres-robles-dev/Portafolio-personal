@@ -1,0 +1,274 @@
+.assistant-chat-messages {
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+    gap: 1.02rem;
+    padding: 0.18rem 0.08rem 0.26rem;
+}
+
+.assistant-chat-message {
+    width: 100%;
+    max-width: min(84%, 760px);
+    padding: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    display: grid;
+    gap: 0.28rem;
+}
+
+.assistant-chat-message::before {
+    font-size: 0.62rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    opacity: 0.95;
+}
+
+.assistant-chat-message p {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.assistant-chat-message.assistant {
+    align-self: flex-start;
+    color: rgba(255, 255, 255, 0.78);
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+    padding-left: 0.62rem;
+}
+
+.assistant-chat-message.assistant::before {
+    content: "Andro";
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.assistant-chat-message.user {
+    align-self: flex-end;
+    color: rgba(255, 255, 255, 1);
+    max-width: min(78%, 700px);
+    text-align: right;
+    border-right: 1px solid rgba(255, 255, 255, 0.82);
+    padding-right: 0.62rem;
+    font-weight: 700;
+}
+
+.assistant-chat-message.user::before {
+    content: "Tu";
+    color: rgba(255, 255, 255, 1);
+}
+
+.assistant-chat-message.pending {
+    opacity: 0.84;
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+    padding-left: 0.62rem;
+}
+
+.assistant-chat-message-meta {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.56);
+}
+
+.assistant-chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.34rem;
+}
+
+.assistant-chat-suggestion {
+    border: 0;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.54rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.28rem 0.42rem;
+    cursor: pointer;
+    transition: opacity var(--dur-fast) var(--ease-soft), background var(--dur-fast) var(--ease-soft);
+}
+
+.assistant-chat-suggestion:hover,
+.assistant-chat-suggestion:focus-visible {
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+}
+
+.assistant-chat-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+}
+
+.assistant-chat-typing i {
+    width: 4px;
+    height: 4px;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.86);
+    animation: assistantChatDot 900ms var(--ease-soft) infinite;
+}
+
+.assistant-chat-typing i:nth-child(2) {
+    animation-delay: 110ms;
+}
+
+.assistant-chat-typing i:nth-child(3) {
+    animation-delay: 220ms;
+}
+
+.assistant-chat-status {
+    min-height: 1rem;
+    padding: 0;
+    font-size: 0.52rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.assistant-chat-status[data-tone="warning"] {
+    color: rgba(255, 214, 102, 0.95);
+}
+
+.assistant-chat-status[data-tone="success"] {
+    color: rgba(127, 255, 192, 0.95);
+}
+
+.assistant-chat-form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.42rem;
+    align-items: end;
+    padding-top: 0.14rem;
+}
+
+.assistant-chat-input {
+    border: 0;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 0.78rem;
+    line-height: 1.44;
+    min-height: 42px;
+    max-height: 128px;
+    resize: none;
+    padding: 0.54rem 0.62rem;
+    transition: background var(--dur-fast) var(--ease-smooth), color var(--dur-fast) var(--ease-smooth);
+}
+
+.assistant-chat-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.assistant-chat-input:focus {
+    outline: none;
+    background: #fff;
+    color: #000;
+    caret-color: #000;
+}
+
+.assistant-chat-input:focus::placeholder {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.assistant-chat-send {
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.18rem 0;
+    transition: opacity var(--dur-fast) var(--ease-smooth);
+}
+
+.assistant-chat-send:hover,
+.assistant-chat-send:focus-visible {
+    opacity: 0.72;
+    transform: none;
+}
+
+.assistant-chat-send:disabled {
+    opacity: 0.44;
+    transform: none;
+    cursor: not-allowed;
+}
+
+@keyframes assistantChatDot {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.35;
+    }
+
+    50% {
+        transform: translateY(-3px);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .assistant-chat-status {
+        min-height: 0.92rem;
+        font-size: 0.48rem;
+        letter-spacing: 0.06em;
+    }
+
+    .assistant-chat-messages {
+        gap: 0.56rem;
+    }
+
+    .assistant-chat-message {
+        max-width: 98%;
+        font-size: 0.7rem;
+        line-height: 1.42;
+    }
+
+    .assistant-chat-message.user {
+        max-width: 92%;
+        padding-right: 0.5rem;
+    }
+
+    .assistant-chat-message.assistant,
+    .assistant-chat-message.pending {
+        padding-left: 0.5rem;
+    }
+
+    .assistant-chat-message::before {
+        font-size: 0.48rem;
+    }
+
+    .assistant-chat-message-meta {
+        font-size: 0.48rem;
+    }
+
+    .assistant-chat-suggestion {
+        font-size: 0.5rem;
+        padding: 0.22rem 0.36rem;
+    }
+
+    .assistant-chat-input {
+        min-height: 40px;
+        max-height: 112px;
+        padding: 0.46rem 0.54rem;
+        font-size: 0.72rem;
+    }
+
+    .assistant-chat-form {
+        grid-template-columns: 1fr;
+        gap: 0.28rem;
+    }
+
+    .assistant-chat-send {
+        width: fit-content;
+        font-size: 0.54rem;
+        letter-spacing: 0.09em;
+    }
+}

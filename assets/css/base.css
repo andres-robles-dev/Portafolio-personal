@@ -1,0 +1,65 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 220ms;
+    --dur-med: 520ms;
+    --dur-slow: 900ms;
+    --line: rgba(0, 0, 0, 0.14);
+    --bg: #e7e7e7;
+    --panel: #f7f7f7;
+    --fg: #080808;
+    --fg-muted: rgba(8, 8, 8, 0.64);
+    --fg-soft: rgba(8, 8, 8, 0.48);
+    --surface-dark: #050505;
+    --line-dark: rgba(255, 255, 255, 0.14);
+    --radius-xl: 34px;
+    --radius-lg: 22px;
+    --display-font: "Space Mono", monospace;
+    --base-font: "Space Mono", monospace;
+    --hero-pad-x: 2.5rem;
+}
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
+
+body {
+    font-family: var(--base-font);
+    background: #000;
+    color: var(--fg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    min-height: 100%;
+}
+
+.font-mono {
+    font-family: var(--base-font);
+}
+
+.font-display {
+    font-family: var(--display-font);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Cursor normal - sin estilos personalizados */

@@ -1,0 +1,129 @@
+.duck-runner-section {
+    padding: 2.4rem 1.2rem 4.2rem;
+}
+
+.duck-runner-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    gap: 0.92rem;
+}
+
+.duck-runner-kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(242, 242, 242, 0.64);
+    margin-bottom: 0.34rem;
+}
+
+.duck-runner-title {
+    font-family: var(--display-font);
+    text-transform: uppercase;
+    font-size: clamp(1.7rem, 3.8vw, 3rem);
+    line-height: 0.95;
+    letter-spacing: 0.06em;
+    color: #fff;
+    margin-bottom: 0.34rem;
+}
+
+.duck-runner-copy {
+    max-width: 70ch;
+    color: rgba(242, 242, 242, 0.7);
+    font-size: 0.72rem;
+    line-height: 1.56;
+}
+
+.duck-runner-stage {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.duck-runner-canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.duck-runner-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+    gap: 0.28rem;
+    color: rgba(242, 242, 242, 0.86);
+    pointer-events: none;
+    transition: opacity 180ms var(--ease-smooth);
+}
+
+.duck-runner-overlay.is-hidden {
+    opacity: 0;
+}
+
+.duck-runner-overlay-title {
+    font-size: 0.86rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.duck-runner-overlay-hint {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(242, 242, 242, 0.62);
+}
+
+.duck-runner-hud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.84rem 1.2rem;
+    align-items: center;
+    color: rgba(242, 242, 242, 0.65);
+    font-size: 0.6rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.duck-runner-hud strong {
+    color: #fff;
+    font-weight: 700;
+    margin-left: 0.2rem;
+}
+
+@media (max-width: 767px) {
+    .duck-runner-section {
+        padding: 1.5rem 1rem 3.4rem;
+    }
+
+    .duck-runner-title {
+        font-size: clamp(1.4rem, 9vw, 2rem);
+    }
+
+    .duck-runner-copy {
+        font-size: 0.66rem;
+    }
+
+    .duck-runner-overlay-title {
+        font-size: 0.74rem;
+    }
+
+    .duck-runner-overlay-hint {
+        font-size: 0.56rem;
+    }
+
+    .duck-runner-hud {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.44rem;
+    }
+}

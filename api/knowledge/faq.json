@@ -1,0 +1,49 @@
+{
+    "document": "faq",
+    "version": 1,
+    "priority": "medium",
+    "blocks": [
+        {
+            "id": "faq-times",
+            "title": "Plazos de entrega",
+            "keywords": ["tiempo", "plazo", "cuando", "entrega", "duracion"],
+            "content": "Una landing puede tardar 1 a 3 semanas. Una web corporativa 2 a 6 semanas. Un sistema interno o SaaS sencillo 4 a 12 semanas segun alcance."
+        },
+        {
+            "id": "faq-phases",
+            "title": "Trabajo por fases",
+            "keywords": ["fases", "mvp", "iterativo", "pasos"],
+            "content": "Se recomienda trabajar por fases para lanzar antes, reducir riesgo y escalar con datos reales."
+        },
+        {
+            "id": "faq-existing-project",
+            "title": "Mejora de proyectos existentes",
+            "keywords": ["existente", "mejorar", "migrar", "optimizar"],
+            "content": "Si ya tienes una web o sistema se puede auditar, priorizar y mejorar por bloques sin rehacer todo desde cero."
+        },
+        {
+            "id": "faq-database",
+            "title": "Bases de datos y escalabilidad",
+            "keywords": ["base de datos", "mysql", "rendimiento", "escalable", "consultas"],
+            "content": "Se puede crear o mejorar la base de datos para que sea mas clara, rapida y preparada para crecer por fases."
+        },
+        {
+            "id": "faq-support",
+            "title": "Soporte y continuidad",
+            "keywords": ["soporte", "mantenimiento", "continuidad", "post entrega"],
+            "content": "Despues de la entrega se puede continuar con soporte evolutivo para mejoras y nuevas integraciones."
+        },
+        {
+            "id": "faq-mobile-request",
+            "title": "Cuando piden app movil",
+            "keywords": ["android", "ios", "app movil", "nativa", "alternativa"],
+            "content": "Si el cliente pide app movil, primero se explora el objetivo funcional. Cuando el objetivo se puede cubrir en web/PWA, se propone esa ruta para reducir tiempo y coste inicial."
+        },
+        {
+            "id": "faq-stack-flex",
+            "title": "Flexibilidad de stack",
+            "keywords": ["stack", "framework", "tecnologia", "node", "next", "python", "php"],
+            "content": "Se trabaja con stack probado para entregar rapido, pero hay flexibilidad para evaluar tecnologia solicitada si aporta ventaja real para el caso."
+        }
+    ]
+}
