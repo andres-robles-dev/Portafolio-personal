@@ -2,13 +2,7 @@
 
 require __DIR__ . DIRECTORY_SEPARATOR . "bootstrap.php";
 
-if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-    api_json_response(204, ["ok" => true]);
-}
-
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    api_error_response(405, "METHOD_NOT_ALLOWED", "Solo se permite POST para este endpoint.");
-}
+api_require_post();
 
 $config = api_load_config();
 
@@ -21,6 +15,15 @@ if (!api_rate_limit_allow(
 }
 
 $body = api_get_json_body();
+api_validate_text_fields($body, ['name' => 480, 'email' => 180, 'company' => 720, 'inquiryType' => 80, 'message' => 16000, 'source' => 80, 'createdAt' => 40, 'website' => 180]);
+foreach (['formStartedAt', 'submittedAt'] as $field) {
+    if (isset($body[$field]) && !is_int($body[$field]) && !(is_string($body[$field]) && ctype_digit($body[$field]))) {
+        api_error_response(422, 'VALIDATION_ERROR', 'Marca temporal invalida.');
+    }
+}
+if (!api_rate_limit_allow('contact-global', (int) $config['CONTACT_GLOBAL_HOURLY_MAX'], 3600)) {
+    api_error_response(429, 'RATE_LIMIT', 'Se alcanzo el limite global de solicitudes.');
+}
 
 $honeypotField = api_trim_text((string) ($config["CONTACT_HONEYPOT_FIELD"] ?? "website"), 40);
 
@@ -28,6 +31,7 @@ if ($honeypotField === "") {
     $honeypotField = "website";
 }
 
+api_validate_text_fields($body, [$honeypotField => 180]);
 $honeypotValue = api_trim_text((string) ($body[$honeypotField] ?? ""), 180);
 
 if ($honeypotValue !== "") {
@@ -61,7 +65,7 @@ $payload = [
     "inquiryType" => api_trim_text((string) ($body["inquiryType"] ?? ""), 80),
     "message" => api_trim_text((string) ($body["message"] ?? ""), 4000),
     "source" => api_trim_text((string) ($body["source"] ?? "portfolio-web"), 80),
-    "createdAt" => api_trim_text((string) ($body["createdAt"] ?? gmdate("c")), 40)
+    "createdAt" => gmdate("c")
 ];
 
 $errors = [];
@@ -86,6 +90,10 @@ if (!empty($errors)) {
     api_error_response(422, "VALIDATION_ERROR", "Revisa los campos enviados.", [
         "fields" => $errors
     ]);
+}
+
+if ($config['APP_MODE'] === 'demo') {
+    api_json_response(200, ['status' => 'demo', 'stored' => false, 'notified' => false]);
 }
 
 $emailBucket = strtolower($payload["email"]);

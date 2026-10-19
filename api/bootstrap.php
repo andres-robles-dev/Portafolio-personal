@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', '0');
+require_once __DIR__ . '/security.php';
+
 if (function_exists("header_remove")) {
     @header_remove("X-Powered-By");
 }
@@ -92,12 +95,16 @@ function api_load_config(): array
         return $config;
     }
 
-    if (!$envLoaded) {
-        api_load_env_file(__DIR__ . DIRECTORY_SEPARATOR . ".env");
+    if (!$envLoaded && getenv('APP_LOAD_ENV') !== '0') {
+        api_load_env_file(api_env_value('API_ENV_FILE', __DIR__ . DIRECTORY_SEPARATOR . '.env'));
         $envLoaded = true;
     }
 
     $defaults = [
+        "APP_MODE" => "live",
+        "CHAT_GLOBAL_DAILY_MAX" => 200,
+        "CONTACT_GLOBAL_HOURLY_MAX" => 100,
+        "CHAT_SESSION_TTL_SECONDS" => 604800,
         "DEEPSEEK_API_KEY" => "",
         "DEEPSEEK_MODEL" => "llama-3.1-8b-instant",
         "DEEPSEEK_API_BASE" => "https://api.groq.com/openai/v1",
@@ -111,10 +118,12 @@ function api_load_config(): array
         "CHAT_V2_CLOSE_SOFT_ATTEMPTS" => 2,
         "CHAT_V2_TEMPERATURE" => "0.35",
         "CHAT_V2_MAX_TOKENS" => 900,
-        "CHAT_KNOWLEDGE_PATH" => "./knowledge",
+        "CHAT_KNOWLEDGE_PATH" => "./knowledge/motor.json",
         "CHAT_RETRIEVAL_BLOCKS" => 4,
-        "CHAT_QUOTE_NOTIFY_EMAIL" => "drezyroble09@gmail.com",
+        "CHAT_QUOTE_NOTIFY_EMAIL" => "",
         "CHAT_QUOTE_STORAGE_PATH" => "../storage/quotes.ndjson",
+        "PUBLIC_CONTACT_EMAIL" => "",
+        "PUBLIC_CONTACT_WHATSAPP" => "",
         "CONTACT_STORAGE_PATH" => "../storage/contacts.ndjson",
         "CONTACT_NOTIFY_EMAIL" => "",
         "CONTACT_RATE_LIMIT_MAX" => 3,
@@ -127,6 +136,10 @@ function api_load_config(): array
     ];
 
     $config = $defaults;
+    $config['APP_MODE'] = api_env_value('APP_MODE', 'live') === 'demo' ? 'demo' : 'live';
+    foreach (['CHAT_GLOBAL_DAILY_MAX', 'CONTACT_GLOBAL_HOURLY_MAX', 'CHAT_SESSION_TTL_SECONDS'] as $key) {
+        $config[$key] = max(1, min(2592000, (int) api_env_value($key, (string) $defaults[$key])));
+    }
     $config["DEEPSEEK_API_KEY"] = trim(api_env_value("DEEPSEEK_API_KEY", $defaults["DEEPSEEK_API_KEY"]));
     $config["DEEPSEEK_MODEL"] = trim(api_env_value("DEEPSEEK_MODEL", $defaults["DEEPSEEK_MODEL"]));
     $config["DEEPSEEK_API_BASE"] = trim(api_env_value("DEEPSEEK_API_BASE", $defaults["DEEPSEEK_API_BASE"]));
@@ -144,6 +157,8 @@ function api_load_config(): array
     $config["CHAT_RETRIEVAL_BLOCKS"] = (int) api_env_value("CHAT_RETRIEVAL_BLOCKS", (string) $defaults["CHAT_RETRIEVAL_BLOCKS"]);
     $config["CHAT_QUOTE_NOTIFY_EMAIL"] = trim(api_env_value("CHAT_QUOTE_NOTIFY_EMAIL", $defaults["CHAT_QUOTE_NOTIFY_EMAIL"]));
     $config["CHAT_QUOTE_STORAGE_PATH"] = trim(api_env_value("CHAT_QUOTE_STORAGE_PATH", $defaults["CHAT_QUOTE_STORAGE_PATH"]));
+    $config["PUBLIC_CONTACT_EMAIL"] = trim(api_env_value("PUBLIC_CONTACT_EMAIL", $defaults["PUBLIC_CONTACT_EMAIL"]));
+    $config["PUBLIC_CONTACT_WHATSAPP"] = trim(api_env_value("PUBLIC_CONTACT_WHATSAPP", $defaults["PUBLIC_CONTACT_WHATSAPP"]));
     $config["CONTACT_STORAGE_PATH"] = trim(api_env_value("CONTACT_STORAGE_PATH", $defaults["CONTACT_STORAGE_PATH"]));
     $config["CONTACT_NOTIFY_EMAIL"] = trim(api_env_value("CONTACT_NOTIFY_EMAIL", $defaults["CONTACT_NOTIFY_EMAIL"]));
     $config["CONTACT_RATE_LIMIT_MAX"] = (int) api_env_value("CONTACT_RATE_LIMIT_MAX", (string) $defaults["CONTACT_RATE_LIMIT_MAX"]);
@@ -159,7 +174,13 @@ function api_load_config(): array
 
 function api_get_json_body(int $maxBytes = 65536): array
 {
-    $raw = (string) file_get_contents("php://input");
+    if (strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0])) !== 'application/json') {
+        api_error_response(415, 'UNSUPPORTED_MEDIA_TYPE', 'Se requiere Content-Type application/json.');
+    }
+    if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > $maxBytes) {
+        api_error_response(413, 'PAYLOAD_TOO_LARGE', 'El payload supera el tamano permitido.');
+    }
+    $raw = (string) file_get_contents('php://input', false, null, 0, $maxBytes + 1);
 
     if ($raw === "") {
         api_error_response(400, "EMPTY_BODY", "El cuerpo de la peticion esta vacio.");
@@ -169,9 +190,10 @@ function api_get_json_body(int $maxBytes = 65536): array
         api_error_response(413, "PAYLOAD_TOO_LARGE", "El payload supera el tamano permitido.");
     }
 
-    $decoded = json_decode($raw, true);
+    $object = json_decode($raw, false, 32);
+    $decoded = json_decode($raw, true, 32);
 
-    if (!is_array($decoded)) {
+    if (!is_object($object) || !is_array($decoded)) {
         api_error_response(400, "INVALID_JSON", "El cuerpo debe ser JSON valido.");
     }
 
@@ -206,8 +228,11 @@ function api_normalize_history($history, int $maxItems = 10): array
             continue;
         }
 
-        $role = isset($entry["role"]) && $entry["role"] === "assistant" ? "assistant" : "user";
-        $content = api_trim_text((string) ($entry["content"] ?? ""), 1000);
+        if (!in_array($entry['role'] ?? '', ['user', 'assistant'], true) || !is_string($entry['content'] ?? null)) {
+            api_error_response(422, 'VALIDATION_ERROR', 'Historial invalido.');
+        }
+        $role = $entry['role'];
+        $content = api_trim_text($entry['content'], 1000);
 
         if ($content === "") {
             continue;
@@ -228,50 +253,62 @@ function api_normalize_history($history, int $maxItems = 10): array
 
 function api_client_ip(): string
 {
-    $ip = $_SERVER["HTTP_X_FORWARDED_FOR"] ?? $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
-
-    if (strpos($ip, ",") !== false) {
-        $parts = explode(",", $ip);
-        $ip = trim($parts[0]);
+    $remote = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $trusted = array_filter(array_map('trim', explode(',', api_env_value('TRUSTED_PROXIES'))));
+    if (in_array($remote, $trusted, true)) {
+        $forwarded = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '')[0]);
+        if (filter_var($forwarded, FILTER_VALIDATE_IP)) return $forwarded;
     }
-
-    return trim($ip) !== "" ? trim($ip) : "0.0.0.0";
+    return filter_var($remote, FILTER_VALIDATE_IP) ? $remote : '0.0.0.0';
 }
 
 function api_rate_limit_allow(string $bucketKey, int $maxRequests, int $windowSeconds): bool
 {
     $safeWindow = max(1, $windowSeconds);
-    $safeMax = max(1, $maxRequests);
-    $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "andro_api_rl_" . sha1($bucketKey) . ".json";
-    $now = time();
-    $windowStart = $now - $safeWindow;
-    $events = [];
-
-    if (is_file($file)) {
-        $raw = (string) file_get_contents($file);
-        $decoded = json_decode($raw, true);
-
-        if (is_array($decoded)) {
+    $safeMax = max(1, min(5000, $maxRequests));
+    $directory = api_env_value('RATE_LIMIT_DIR', sys_get_temp_dir() . '/portfolio-rate-' . substr(hash('sha256', __DIR__), 0, 16));
+    $root = strtolower(str_replace('\\', '/', dirname(__DIR__))) . '/';
+    $handle = null;
+    try {
+        $directory = api_private_directory($directory);
+        if (str_starts_with(strtolower(str_replace('\\', '/', $directory)) . '/', $root)) throw new RuntimeException('Public counters');
+        $file = $directory . '/' . hash('sha256', $bucketKey) . '.json';
+        $handle = @fopen($file, 'c+');
+        if (!$handle || !flock($handle, LOCK_EX)) throw new RuntimeException('Counters unavailable');
+        @chmod($file, 0600);
+        $now = time();
+        $windowStart = $now - $safeWindow;
+        $events = [];
+        $raw = stream_get_contents($handle, 131073);
+        if (strlen($raw) > 131072) throw new RuntimeException('Invalid counter size');
+        if ($raw !== '') {
+            $decoded = json_decode($raw, true, 16, JSON_THROW_ON_ERROR);
+            if (!is_array($decoded)) throw new RuntimeException('Invalid counter');
             foreach ($decoded as $timestamp) {
                 if (is_int($timestamp) && $timestamp >= $windowStart) {
                     $events[] = $timestamp;
                 }
             }
         }
+        if (count($events) >= $safeMax) return false;
+        $events[] = $now;
+        $encoded = json_encode($events, JSON_THROW_ON_ERROR);
+        rewind($handle);
+        if (!ftruncate($handle, 0) || fwrite($handle, $encoded) !== strlen($encoded) || !fflush($handle)) throw new RuntimeException('Counter write failed');
+        return true;
+    } catch (Throwable $exception) {
+        api_error_response(503, 'RATE_LIMIT_UNAVAILABLE', 'El control de uso no esta disponible temporalmente.');
+    } finally {
+        if (is_resource($handle)) {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+        }
     }
-
-    if (count($events) >= $safeMax) {
-        file_put_contents($file, json_encode($events), LOCK_EX);
-        return false;
-    }
-
-    $events[] = $now;
-    file_put_contents($file, json_encode($events), LOCK_EX);
-    return true;
 }
 
 function api_post_json(string $url, array $payload, array $headers = [], int $timeoutSeconds = 30): array
 {
+    if (parse_url($url, PHP_URL_SCHEME) !== 'https') return ['status' => 0, 'body' => '', 'error' => 'INVALID_UPSTREAM_URL', 'errno' => 0];
     $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     $effectiveHeaders = array_merge([
         "Content-Type: application/json"
@@ -280,6 +317,12 @@ function api_post_json(string $url, array $payload, array $headers = [], int $ti
     if (function_exists("curl_init")) {
         $handle = curl_init($url);
 
+        try {
+            $tls = api_tls_options();
+        } catch (Throwable $exception) {
+            curl_close($handle);
+            return ['status' => 0, 'body' => '', 'error' => 'TLS_CONFIG_ERROR', 'errno' => 60];
+        }
         curl_setopt_array($handle, [
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
@@ -287,46 +330,23 @@ function api_post_json(string $url, array $payload, array $headers = [], int $ti
             CURLOPT_POSTFIELDS => $jsonPayload,
             CURLOPT_TIMEOUT => max(1, $timeoutSeconds),
             CURLOPT_CONNECTTIMEOUT => max(1, min(15, $timeoutSeconds)),
-            CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_SSL_VERIFYHOST => 2
-        ]);
+            CURLOPT_FOLLOWLOCATION => false
+        ] + $tls);
 
         $body = curl_exec($handle);
-        $error = curl_error($handle);
+        $errno = curl_errno($handle);
         $status = (int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
         curl_close($handle);
 
         return [
             "status" => $status,
             "body" => is_string($body) ? $body : "",
-            "error" => $error !== "" ? $error : null
+            "error" => $errno !== 0 ? 'TRANSPORT_ERROR' : null,
+            'errno' => $errno
         ];
     }
 
-    $context = stream_context_create([
-        "http" => [
-            "method" => "POST",
-            "header" => implode("\r\n", $effectiveHeaders),
-            "content" => $jsonPayload,
-            "timeout" => max(1, $timeoutSeconds),
-            "ignore_errors" => true
-        ]
-    ]);
-
-    $body = @file_get_contents($url, false, $context);
-    $status = 0;
-
-    if (isset($http_response_header) && is_array($http_response_header) && isset($http_response_header[0])) {
-        if (preg_match("#HTTP/[0-9.]+\s+(\d{3})#", $http_response_header[0], $matches)) {
-            $status = (int) $matches[1];
-        }
-    }
-
-    return [
-        "status" => $status,
-        "body" => is_string($body) ? $body : "",
-        "error" => null
-    ];
+    return ['status' => 0, 'body' => '', 'error' => 'CURL_UNAVAILABLE', 'errno' => 0];
 }
 
 function api_generate_id(string $prefix = "id"): string
@@ -340,13 +360,13 @@ function api_generate_id(string $prefix = "id"): string
 
 function api_resolve_storage_path(string $path): string
 {
-    $trimmed = trim($path);
+    $trimmed = str_replace('\\', '/', trim($path));
 
     if ($trimmed === "") {
         return __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . "contacts.ndjson";
     }
 
-    if (preg_match("#^([A-Za-z]:[\\/]|/)#", $trimmed) === 1) {
+    if (preg_match('~^(?:[A-Za-z]:/|/)~', $trimmed) === 1) {
         return $trimmed;
     }
 
@@ -358,12 +378,12 @@ function api_append_json_line(string $filePath, array $payload, ?string &$error 
     $dir = dirname($filePath);
 
     if (!is_dir($dir)) {
-        if (!mkdir($dir, 0775, true) && !is_dir($dir)) {
+        if (!mkdir($dir, 0700, true) && !is_dir($dir)) {
             $error = "NO_STORAGE_DIR";
             return false;
         }
 
-        @chmod($dir, 0775);
+        @chmod($dir, 0700);
     }
 
     $line = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -380,7 +400,7 @@ function api_append_json_line(string $filePath, array $payload, ?string &$error 
         return false;
     }
 
-    @chmod($filePath, 0664);
+    @chmod($filePath, 0600);
 
     return true;
 }
@@ -421,7 +441,7 @@ function api_try_send_plain_mail(string $recipientEmail, string $subject, string
         return false;
     }
 
-    $safeSubject = trim($subject);
+    $safeSubject = api_safe_mail_subject($subject);
     $safeBody = trim($body);
 
     if ($safeSubject === "" || $safeBody === "") {
@@ -430,4 +450,9 @@ function api_try_send_plain_mail(string $recipientEmail, string $subject, string
 
     $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
     return @mail($to, $safeSubject, $safeBody, $headers);
+}
+
+function api_safe_mail_subject(string $subject): string
+{
+    return api_trim_text((string) preg_replace('/[\r\n\x00]+/', ' ', $subject), 180);
 }

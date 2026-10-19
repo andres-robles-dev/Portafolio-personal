@@ -1,106 +1,52 @@
-import {
-    CONTACT_API_ENDPOINT,
-    CONTACT_API_TIMEOUT_MS,
-    CONTACT_QUEUE_STORAGE_KEY
-} from "../core/constants.js";
+import { CONTACT_API_ENDPOINT, CONTACT_API_TIMEOUT_MS, CONTACT_QUEUE_STORAGE_KEY } from '../core/constants.js';
 
-function safeLoadQueue() {
+export function getQueuedContactsCount() {
     try {
         const raw = localStorage.getItem(CONTACT_QUEUE_STORAGE_KEY);
-
-        if (!raw) {
-            return [];
-        }
-
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
+        if (!raw) return 0;
+        if (raw.length > 1000000) return 1;
+        const queue = JSON.parse(raw);
+        return Array.isArray(queue) ? queue.length : 0;
     } catch {
-        return [];
+        return 0;
     }
 }
 
-function safeSaveQueue(queue) {
+export function clearQueuedContacts() {
     try {
-        localStorage.setItem(CONTACT_QUEUE_STORAGE_KEY, JSON.stringify(queue));
-    } catch {
-        return;
-    }
-}
-
-async function postContactPayload(payload, endpoint, timeoutMs) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload),
-            signal: controller.signal
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP_${response.status}`);
-        }
-
+        localStorage.removeItem(CONTACT_QUEUE_STORAGE_KEY);
         return true;
+    } catch {
+        return false;
+    }
+}
+
+export async function submitContact(payload, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? CONTACT_API_TIMEOUT_MS);
+    try {
+        const response = await fetch(options.endpoint ?? CONTACT_API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+            credentials: 'same-origin',
+        });
+        const data = await response.json().catch(() => null);
+        if (response.ok && data?.status === 'demo' && data.stored === false) return { status: 'demo' };
+        if (response.ok && data?.status === 'ok' && data.stored === true) return { status: 'sent' };
+        return {
+            status: 'error',
+            message: response.status === 429 ? 'Se alcanzo un limite de uso. Espera antes de reintentar.' : 'La solicitud no fue aceptada. Revisa los campos e intentalo de nuevo.',
+            fields: data?.fields && typeof data.fields === 'object' ? data.fields : {},
+        };
+    } catch {
+        return { status: 'error', message: 'No se pudo enviar. Tus datos permanecen en el formulario, sin guardarse en el navegador.' };
     } finally {
         clearTimeout(timer);
     }
 }
 
-async function flushQueue(endpoint, timeoutMs) {
-    const queue = safeLoadQueue();
-
-    if (!queue.length) {
-        return 0;
-    }
-
-    const pending = [];
-
-    for (const item of queue) {
-        try {
-            await postContactPayload(item, endpoint, timeoutMs);
-        } catch {
-            pending.push(item);
-        }
-    }
-
-    safeSaveQueue(pending);
-    return pending.length;
-}
-
-export async function submitContact(payload, options = {}) {
-    const endpoint = options.endpoint ?? CONTACT_API_ENDPOINT;
-    const timeoutMs = options.timeoutMs ?? CONTACT_API_TIMEOUT_MS;
-
-    await flushQueue(endpoint, timeoutMs);
-
-    try {
-        await postContactPayload(payload, endpoint, timeoutMs);
-        return {
-            status: "sent"
-        };
-    } catch {
-        const queue = safeLoadQueue();
-        queue.push(payload);
-        safeSaveQueue(queue);
-
-        return {
-            status: "queued",
-            queuedItems: queue.length
-        };
-    }
-}
-
-export function getQueuedContactsCount() {
-    return safeLoadQueue().length;
-}
-
-export async function syncQueuedContacts(options = {}) {
-    const endpoint = options.endpoint ?? CONTACT_API_ENDPOINT;
-    const timeoutMs = options.timeoutMs ?? CONTACT_API_TIMEOUT_MS;
-    return flushQueue(endpoint, timeoutMs);
+export async function syncQueuedContacts() {
+    return getQueuedContactsCount();
 }

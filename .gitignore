@@ -1,3 +1,11 @@
 api/.env
+.env
+**/.env.*
+!**/.env.example
+*.log
+*.bak
+node_modules/
 storage/contacts.ndjson
-storage/chat-sessions-v2/*.json
+storage/chat-sessions-v2/**
+!storage/chat-sessions-v2/.gitkeep
+storage/quotes.ndjson

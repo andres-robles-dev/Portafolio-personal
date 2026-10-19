@@ -75,6 +75,9 @@ function agent_v2_load_memory(string $sessionId, array $config): array
         return agent_v2_default_memory($safeSessionId);
     }
 
+    $ttl = max(300, min(2592000, (int) ($config['CHAT_SESSION_TTL_SECONDS'] ?? 604800)));
+    if (filemtime($memoryPath) < time() - $ttl) return agent_v2_default_memory($safeSessionId);
+
     $raw = @file_get_contents($memoryPath);
 
     if (!is_string($raw) || $raw === "") {
@@ -102,12 +105,12 @@ function agent_v2_save_memory(array $memory, array $config, ?string &$error = nu
     $directory = agent_v2_memory_dir($config);
 
     if (!is_dir($directory)) {
-        if (!mkdir($directory, 0775, true) && !is_dir($directory)) {
+        if (!mkdir($directory, 0700, true) && !is_dir($directory)) {
             $error = "MEMORY_DIR_CREATE_FAILED";
             return false;
         }
 
-        @chmod($directory, 0775);
+        @chmod($directory, 0700);
     }
 
     $memoryPath = agent_v2_memory_file_path($sessionId, $config);
@@ -118,15 +121,36 @@ function agent_v2_save_memory(array $memory, array $config, ?string &$error = nu
         return false;
     }
 
-    $written = @file_put_contents($memoryPath, $encoded, LOCK_EX);
+    $temporaryPath = $memoryPath . '.' . bin2hex(random_bytes(8)) . '.tmp';
+    $written = @file_put_contents($temporaryPath, $encoded, LOCK_EX);
+    if ($written !== false) @chmod($temporaryPath, 0600);
 
-    if ($written === false) {
+    if ($written !== strlen($encoded) || !@rename($temporaryPath, $memoryPath)) {
+        if (is_file($temporaryPath)) @unlink($temporaryPath);
         $error = "MEMORY_WRITE_FAILED";
         return false;
     }
 
-    @chmod($memoryPath, 0664);
+    @chmod($memoryPath, 0600);
     return true;
+}
+
+function agent_v2_acquire_memory_lock(string $sessionId, array $config)
+{
+    try {
+        $directory = api_private_directory(agent_v2_memory_dir($config) . '/.locks');
+        $path = $directory . '/' . agent_v2_sanitize_session_id($sessionId) . '.lock';
+        $lock = @fopen($path, 'c+');
+        if (!$lock) throw new RuntimeException('Lock unavailable');
+        @chmod($path, 0600);
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            fclose($lock);
+            api_error_response(409, 'SESSION_BUSY', 'Hay otra respuesta en curso en esta conversacion.');
+        }
+        return $lock;
+    } catch (Throwable $exception) {
+        api_error_response(503, 'MEMORY_UNAVAILABLE', 'La memoria del asistente no esta disponible.');
+    }
 }
 
 function agent_v2_append_turn(array &$memory, string $role, string $content, int $maxTurns = 16): void
@@ -157,7 +181,7 @@ function agent_v2_append_turn(array &$memory, string $role, string $content, int
 
 function agent_v2_missing_brief_fields(array $lead): array
 {
-    $required = ["projectType", "problem", "objective", "timeline"];
+    $required = ["objective", "timeline"];
     $missing = [];
 
     foreach ($required as $field) {

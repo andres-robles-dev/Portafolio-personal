@@ -7,6 +7,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . "close-manager.php";
 require_once __DIR__ . DIRECTORY_SEPARATOR . "retrieval.php";
 require_once __DIR__ . DIRECTORY_SEPARATOR . "llm-client.php";
 require_once __DIR__ . DIRECTORY_SEPARATOR . "schema-validator.php";
+require_once __DIR__ . DIRECTORY_SEPARATOR . "policy-guard.php";
 
 function agent_v2_field_labels(array $fields): array
 {
@@ -47,23 +48,6 @@ function agent_v2_human_missing_text(array $fields): string
     }
 
     return implode(", ", array_slice($labels, 0, -1)) . " y " . $labels[count($labels) - 1];
-}
-
-function agent_v2_reply_from_raw_model(string $rawModelReply): string
-{
-    $reply = trim($rawModelReply);
-
-    if ($reply === "") {
-        return "";
-    }
-
-    $looksJson = strpos($reply, "{") === 0 || strpos($reply, "[") === 0;
-
-    if ($looksJson) {
-        return "";
-    }
-
-    return api_trim_text($reply, 1600);
 }
 
 function agent_v2_normalize_compare_text(string $text): string
@@ -117,11 +101,14 @@ function agent_v2_detect_conversation_flags(string $message, array $lead): array
     ];
 }
 
-function agent_v2_capability_policy_text(array $flags): string
+function agent_v2_capability_policy_text(array $policy, array $flags): string
 {
+    $allowed = is_array($policy["allowedServices"] ?? null) ? $policy["allowedServices"] : [];
+    $outOfScope = is_array($policy["outOfScopeServices"] ?? null) ? $policy["outOfScopeServices"] : [];
+
     $lines = [
-        "Capacidades base: landing pages, webs corporativas, sistemas internos, APIs e integraciones, Shopify y bases de datos.",
-        "Limite actual: no apps moviles nativas (Android/iOS) en esta etapa.",
+        "Capacidades base: " . (!empty($allowed) ? implode(", ", $allowed) : "landing pages, webs corporativas, sistemas internos, APIs e integraciones, Shopify y bases de datos"),
+        "Fuera de alcance actual: " . (!empty($outOfScope) ? implode(", ", $outOfScope) : "apps moviles nativas Android/iOS"),
         "Flexibilidad tecnica: se puede evaluar stack solicitado por cliente cuando el caso lo justifica.",
         "Colaboracion: en proyectos complejos puede evaluarse coordinacion tecnica con equipo externo como opcion excepcional."
     ];
@@ -139,65 +126,6 @@ function agent_v2_capability_policy_text(array $flags): string
     }
 
     return implode("\n", $lines);
-}
-
-function agent_v2_reply_mentions_scope_limit(string $reply): bool
-{
-    $text = agent_v2_normalize_compare_text($reply);
-
-    if ($text === "") {
-        return false;
-    }
-
-    return preg_match('/\b(no desarrollo apps moviles|no apps moviles|no app movil|alternativa web|version web|pwa|fase de definicion funcional)\b/i', $text) === 1;
-}
-
-function agent_v2_refine_reply_tone(string $reply): string
-{
-    $text = trim($reply);
-
-    if ($text === "") {
-        return "";
-    }
-
-    $replacements = [
-        '/\b(excelente|increible|fantastico|genial|brutal)\b/iu' => "Entendido",
-        '/!{2,}/' => "!",
-        '/\?{2,}/' => "?"
-    ];
-
-    foreach ($replacements as $pattern => $replacement) {
-        $text = preg_replace($pattern, $replacement, $text) ?? $text;
-    }
-
-    return api_trim_text($text, 1600);
-}
-
-function agent_v2_limit_to_one_question(string $reply): string
-{
-    $text = trim($reply);
-
-    if ($text === "") {
-        return "";
-    }
-
-    $count = substr_count($text, "?");
-
-    if ($count <= 1) {
-        return $text;
-    }
-
-    $firstQuestionPos = strpos($text, "?");
-
-    if (!is_int($firstQuestionPos)) {
-        return $text;
-    }
-
-    $prefix = substr($text, 0, $firstQuestionPos + 1);
-    $suffix = substr($text, $firstQuestionPos + 1);
-    $suffix = str_replace("?", ".", $suffix);
-    $suffix = preg_replace('/\.{2,}/', '.', (string) $suffix) ?? $suffix;
-    return trim($prefix . $suffix);
 }
 
 function agent_v2_action_guidance(string $nextAction, string $closeAttempt, array $missingBrief, array $missingContact, array $flags = []): string
@@ -295,6 +223,13 @@ function agent_v2_build_system_prompt(array $params): string
     $threshold = (int) ($params["threshold"] ?? 70);
     $flags = is_array($params["flags"] ?? null) ? $params["flags"] : [];
     $capabilityPolicy = trim((string) ($params["capabilityPolicy"] ?? ""));
+    $motorPolicy = is_array($params["motorPolicy"] ?? null) ? $params["motorPolicy"] : [];
+    $assistantName = api_trim_text((string) ($motorPolicy["assistantName"] ?? "Andro"), 60);
+    $ownerName = api_trim_text((string) ($motorPolicy["ownerName"] ?? "Andres Robles"), 60);
+    $toneStyle = api_trim_text((string) ($motorPolicy["toneStyle"] ?? "Consultivo directo y claro."), 220);
+    $toneCloseness = api_trim_text((string) ($motorPolicy["toneCloseness"] ?? "Cercano sin informalidad."), 160);
+    $maxAdvanceQuestions = max(1, min(2, (int) ($motorPolicy["maxAdvanceQuestions"] ?? 1)));
+    $minimumLeadFields = is_array($motorPolicy["minimumLeadFields"] ?? null) ? $motorPolicy["minimumLeadFields"] : [];
     $briefLabels = agent_v2_field_labels($missingBrief);
     $contactLabels = agent_v2_field_labels($missingContact);
 
@@ -325,15 +260,17 @@ function agent_v2_build_system_prompt(array $params): string
     ];
 
     $rules = [
-        "Eres Andro, asistente comercial de Andres Robles.",
+        "Eres " . ($assistantName !== "" ? $assistantName : "Andro") . ", asistente comercial de " . ($ownerName !== "" ? $ownerName : "Andres Robles") . ".",
         "Objetivo: resolver dudas y guiar de forma natural hacia una cotizacion real.",
         "No des precios cerrados ni promesas garantizadas.",
-        "No fuerces un guion ni interrogatorio. Haz maximo una pregunta de avance por turno.",
+        "No fuerces un guion ni interrogatorio. Haz maximo " . $maxAdvanceQuestions . " pregunta de avance por turno.",
         "No uses adulaciones ni halagos innecesarios.",
         "Si un dato no esta en contexto o memoria, dilo con transparencia y evita inventar.",
         "Si falta contacto y toca cierre comercial, pedir nombre y correo con tacto.",
         "Si el usuario no comparte contacto, mantener la conversacion abierta con CTA amable.",
-        "Responde en espanol, 1-4 frases, tono profesional cercano.",
+        "Estilo de comunicacion: " . ($toneStyle !== "" ? $toneStyle : "Consultivo directo y claro."),
+        "Cercania objetivo: " . ($toneCloseness !== "" ? $toneCloseness : "Cercano sin informalidad."),
+        "Responde en espanol, 1-4 frases, sin jerga innecesaria.",
         "Entrega SIEMPRE JSON valido, sin markdown, sin texto extra fuera del JSON."
     ];
 
@@ -344,6 +281,7 @@ function agent_v2_build_system_prompt(array $params): string
         "Contexto tecnico de la vista:\n" . ($clientContext !== "" ? $clientContext : "Sin contexto tecnico adicional."),
         "Memoria comercial:\n" . ($memorySummary !== "" ? $memorySummary : "Sin memoria comercial."),
         "Readiness actual: " . $readinessScore . "/100 (umbral de cierre: " . $threshold . ")",
+        "Datos minimos para personalizacion y seguimiento: " . (!empty($minimumLeadFields) ? implode(", ", $minimumLeadFields) : "contact.name, contact.email, objective, timeline"),
         "Faltan datos de briefing: " . (!empty($briefLabels) ? implode(", ", $briefLabels) : "ninguno"),
         "Faltan datos de contacto: " . (!empty($contactLabels) ? implode(", ", $contactLabels) : "ninguno"),
         "Siguiente accion recomendada: " . $nextAction . " (intento de cierre: " . $closeAttempt . ")",
@@ -378,6 +316,31 @@ function agent_v2_quote_summary_text(array $memory): string
     ];
 
     return implode("\n", $lines);
+}
+
+function agent_v2_public_contact_hint(array $config): string
+{
+    $email = trim((string) ($config["PUBLIC_CONTACT_EMAIL"] ?? ""));
+    $whatsApp = trim((string) ($config["PUBLIC_CONTACT_WHATSAPP"] ?? ""));
+    $channels = [];
+
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $channels[] = "email " . $email;
+    }
+
+    if ($whatsApp !== "") {
+        $channels[] = "WhatsApp " . $whatsApp;
+    }
+
+    if (empty($channels)) {
+        return "";
+    }
+
+    if (count($channels) === 1) {
+        return "Tambien puedes contactar por " . $channels[0] . ".";
+    }
+
+    return "Tambien puedes contactar por " . implode(" o ", $channels) . ".";
 }
 
 function agent_v2_history_messages(array $history, array $memory, int $historyLimit): array
@@ -441,13 +404,7 @@ function agent_v2_lead_payload(array $lead): array
 
 function agent_v2_handle_chat(array $config): never
 {
-    if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-        api_json_response(204, ["ok" => true]);
-    }
-
-    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        api_error_response(405, "METHOD_NOT_ALLOWED", "Solo se permite POST para este endpoint.");
-    }
+    api_require_post();
 
     if (!api_rate_limit_allow(
         "chat:" . api_client_ip(),
@@ -458,12 +415,31 @@ function agent_v2_handle_chat(array $config): never
     }
 
     $body = api_get_json_body();
+    api_validate_text_fields($body, ['message' => 3600, 'sessionId' => 90]);
+    if ((isset($body['history']) && (!is_array($body['history']) || !array_is_list($body['history']) || count($body['history']) > 24))
+        || (isset($body['context']) && (!is_array($body['context']) || count($body['context']) > 10))) {
+        api_error_response(422, 'VALIDATION_ERROR', 'Contexto o historial invalido.');
+    }
+    if (!api_rate_limit_allow('chat-global-daily', (int) ($config['CHAT_GLOBAL_DAILY_MAX'] ?? 200), 86400)) {
+        api_error_response(429, 'RATE_LIMIT_GLOBAL', 'Se alcanzo el limite global diario del asistente.');
+    }
     $message = api_trim_text((string) ($body["message"] ?? ""), 900);
-    $sessionId = agent_v2_sanitize_session_id(api_trim_text((string) ($body["sessionId"] ?? ""), 90));
-    $historyLimit = max(4, (int) ($config["CHAT_HISTORY_MAX_ITEMS"] ?? 10));
+    $sessionId = api_chat_session_id();
+    $historyLimit = max(4, min(12, (int) ($config["CHAT_HISTORY_MAX_ITEMS"] ?? 10)));
     $history = api_normalize_history($body["history"] ?? [], $historyLimit);
     $contextPayload = is_array($body["context"] ?? null) ? $body["context"] : [];
-    $memoryMaxTurns = max(6, (int) ($config["CHAT_MEMORY_MAX_TURNS"] ?? 16));
+    $memoryMaxTurns = max(6, min(24, (int) ($config["CHAT_MEMORY_MAX_TURNS"] ?? 16)));
+    if (($config['APP_MODE'] ?? 'live') === 'demo') {
+        $memory = agent_v2_default_memory($sessionId);
+        api_json_response(200, [
+            'reply' => 'Modo demostracion: no se ha consultado una IA ni enviado una solicitud. Puedes explorar la interfaz con un caso ficticio.',
+            'sessionId' => $sessionId, 'source' => 'demo', 'suggestions' => [],
+            'lead' => agent_v2_lead_payload($memory['lead']), 'missingFields' => [],
+            'readinessScore' => 0, 'nextBestAction' => 'explore', 'closeAttempt' => 'none',
+            'canSendQuote' => false, 'leadStage' => 'collecting', 'leadStatus' => 'demo', 'scopeStatus' => 'supported',
+        ]);
+    }
+    $sessionLock = agent_v2_acquire_memory_lock($sessionId, $config);
     $memory = agent_v2_load_memory($sessionId, $config);
     $lead = is_array($memory["lead"] ?? null) ? $memory["lead"] : [];
 
@@ -478,12 +454,14 @@ function agent_v2_handle_chat(array $config): never
     $missingContact = agent_v2_missing_contact_fields($lead);
     $contactComplete = empty($missingContact);
     $quoteSent = (bool) ($memory["conversation"]["quoteSent"] ?? false);
+    $lastAction = (string) ($memory["conversation"]["lastAction"] ?? "explore");
+    $motorPolicy = agent_v2_motor_policy($config);
     $canSendQuote = agent_v2_can_send_quote($lead, $readinessScore, $config);
     $priceIntent = agent_v2_is_price_intent($message);
     $confirmIntent = agent_v2_is_confirmation_intent($message);
     $flags = agent_v2_detect_conversation_flags($message, $lead);
     $needsScopeReframe = (bool) ($flags["needsScopeReframe"] ?? false) || agent_v2_needs_scope_reframe($lead);
-    $capabilityPolicy = agent_v2_capability_policy_text($flags);
+    $capabilityPolicy = agent_v2_capability_policy_text($motorPolicy, $flags);
 
     $previewAction = agent_v2_next_action([
         "quoteSent" => $quoteSent,
@@ -494,6 +472,7 @@ function agent_v2_handle_chat(array $config): never
         "priceIntent" => $priceIntent,
         "confirmIntent" => $confirmIntent,
         "needsReframe" => $needsScopeReframe,
+        "lastAction" => $lastAction,
         "closeAttempts" => (int) ($memory["conversation"]["closeAttempts"] ?? 0),
         "maxSoftAttempts" => (int) ($config["CHAT_V2_CLOSE_SOFT_ATTEMPTS"] ?? 2),
         "missingBriefFields" => $missingBrief
@@ -520,9 +499,14 @@ function agent_v2_handle_chat(array $config): never
 
     if ($message === "") {
         $reply = "Cuentame que quieres construir o mejorar y te ayudo a aterrizar una propuesta por fases.";
+
+        if (trim((string) ($motorPolicy["fallbackReply"] ?? "")) !== "") {
+            $reply = "Cuentame que quieres construir o mejorar. " . trim((string) ($motorPolicy["fallbackReply"] ?? ""));
+        }
+
         agent_v2_append_turn($memory, "assistant", $reply, $memoryMaxTurns);
         $memoryError = null;
-        agent_v2_save_memory($memory, $config, $memoryError);
+        if (!agent_v2_save_memory($memory, $config, $memoryError)) api_error_response(503, 'MEMORY_UNAVAILABLE', 'No se pudo conservar la conversacion.');
 
         api_json_response(200, [
             "reply" => $reply,
@@ -552,7 +536,8 @@ function agent_v2_handle_chat(array $config): never
         "nextAction" => $previewAction["nextBestAction"],
         "closeAttempt" => $previewAction["closeAttempt"],
         "readinessScore" => $readinessScore,
-        "threshold" => $threshold
+        "threshold" => $threshold,
+        "motorPolicy" => $motorPolicy
     ]);
 
     $messages = [
@@ -580,18 +565,11 @@ function agent_v2_handle_chat(array $config): never
     $reply = trim((string) $normalized["reply"]);
 
     if ($reply === "") {
-        $reply = agent_v2_reply_from_raw_model((string) $rawModelReply);
+        $reply = trim((string) ($motorPolicy["fallbackReply"] ?? ""));
     }
 
     if ($reply === "") {
         $reply = "Entendido. Cuentame un poco mas y te ayudo a concretar la propuesta.";
-    }
-
-    $reply = agent_v2_refine_reply_tone($reply);
-    $reply = agent_v2_limit_to_one_question($reply);
-
-    if ($needsScopeReframe && !agent_v2_reply_mentions_scope_limit($reply)) {
-        $reply = rtrim($reply) . "\n\nAhora mismo no desarrollo apps moviles nativas, pero podemos convertir ese objetivo en una version web/PWA por fases.";
     }
 
     $missingBriefBeforeModel = $missingBrief;
@@ -622,6 +600,7 @@ function agent_v2_handle_chat(array $config): never
         "priceIntent" => $priceIntent,
         "confirmIntent" => $confirmIntent,
         "needsReframe" => $needsScopeReframe,
+        "lastAction" => (string) ($memory["conversation"]["lastAction"] ?? "explore"),
         "closeAttempts" => (int) ($memory["conversation"]["closeAttempts"] ?? 0),
         "maxSoftAttempts" => (int) ($config["CHAT_V2_CLOSE_SOFT_ATTEMPTS"] ?? 2),
         "missingBriefFields" => $missingBrief
@@ -638,13 +617,15 @@ function agent_v2_handle_chat(array $config): never
     $quoteSendReason = "";
 
     $readyToHandoff = !(bool) ($memory["conversation"]["quoteSent"] ?? false)
+        && $lastAction === 'close_final'
         && $confirmIntent
         && $canSendQuote
         && (string) ($finalAction["nextBestAction"] ?? "") === "handoff"
         && (string) ($finalAction["closeAttempt"] ?? "") === "final";
 
     if ($readyToHandoff) {
-        $notifyEmail = trim((string) ($config["CHAT_QUOTE_NOTIFY_EMAIL"] ?? "drezyroble09@gmail.com"));
+        $notifyEmail = trim((string) ($config["CHAT_QUOTE_NOTIFY_EMAIL"] ?? ""));
+        $publicContactHint = agent_v2_public_contact_hint($config);
         $subject = "Nueva solicitud de cotizacion - " . (string) ($lead["contact"]["name"] ?? "Lead web");
         $mailBody = agent_v2_quote_summary_text($memory);
         $quoteStoragePath = api_resolve_storage_path((string) ($config["CHAT_QUOTE_STORAGE_PATH"] ?? "../storage/quotes.ndjson"));
@@ -669,12 +650,25 @@ function agent_v2_handle_chat(array $config): never
             $memory["conversation"]["quoteSentAt"] = gmdate("c");
             $quoteSendResult = "queued";
             $quoteSendReason = "mail_delivery_failed";
-            $reply = rtrim($reply) . "\n\nNo pude enviar el correo ahora mismo, pero tu solicitud quedo guardada para seguimiento. Si prefieres, tambien puedes escribir a drezyroble09@gmail.com.";
+            $reply = rtrim($reply) . "\n\nNo pude enviar el correo ahora mismo, pero tu solicitud quedo guardada para seguimiento.";
+
+            if ($publicContactHint !== "") {
+                $reply = rtrim($reply) . "\n\n" . $publicContactHint;
+            }
         } else {
             $quoteSendResult = "failed";
             $quoteSendReason = "mail_and_storage_failed";
-            $reply = rtrim($reply) . "\n\nNo pude enviar ni guardar la solicitud en este momento. Puedes escribir a drezyroble09@gmail.com o WhatsApp 640157492.";
+            $reply = rtrim($reply) . "\n\nNo pude enviar ni guardar la solicitud en este momento.";
+
+            if ($publicContactHint !== "") {
+                $reply = rtrim($reply) . "\n\n" . $publicContactHint;
+            }
         }
+    } elseif ($confirmIntent && $canSendQuote && $lastAction !== 'close_final' && !(bool) ($memory['conversation']['quoteSent'] ?? false)) {
+        $finalAction['nextBestAction'] = 'close_final';
+        $finalAction['closeAttempt'] = 'final';
+        $memory['conversation']['lastAction'] = 'close_final';
+        $reply = 'Tenemos el briefing y el contacto. Confirmas que deseas enviar la solicitud de cotizacion?';
     } elseif ($confirmIntent && !(bool) ($memory["conversation"]["quoteSent"] ?? false)) {
         if (!agent_v2_contact_is_valid($lead)) {
             $quoteSendResult = "blocked_missing_contact";
@@ -696,14 +690,28 @@ function agent_v2_handle_chat(array $config): never
 
     $quoteSent = (bool) ($memory["conversation"]["quoteSent"] ?? false);
     $leadStatus = $quoteSent ? "sent-to-andres" : ($canSendQuote ? "ready-to-confirm" : "collecting-data");
-    $suggestions = !empty($normalized["suggestions"])
+    $baseSuggestions = !empty($normalized["suggestions"])
         ? $normalized["suggestions"]
         : agent_v2_default_suggestions((string) ($finalAction["nextBestAction"] ?? "explore"), $flags, $missingBrief, $missingContact);
+
+    $guard = agent_v2_apply_policy_guard([
+        "config" => $config,
+        "reply" => $reply,
+        "suggestions" => $baseSuggestions,
+        "nextAction" => (string) ($finalAction["nextBestAction"] ?? "explore"),
+        "missingFields" => array_values(array_merge($missingBrief, $missingContact)),
+        "needsScopeReframe" => $needsScopeReframe
+    ]);
+
+    $reply = trim((string) ($guard["reply"] ?? $reply));
+    $suggestions = is_array($guard["suggestions"] ?? null) && !empty($guard["suggestions"])
+        ? $guard["suggestions"]
+        : $baseSuggestions;
 
     agent_v2_append_turn($memory, "user", $message, $memoryMaxTurns);
     agent_v2_append_turn($memory, "assistant", $reply, $memoryMaxTurns);
     $memoryError = null;
-    agent_v2_save_memory($memory, $config, $memoryError);
+    if (!agent_v2_save_memory($memory, $config, $memoryError)) api_error_response(503, 'MEMORY_UNAVAILABLE', 'No se pudo conservar la conversacion.');
 
     api_json_response(200, [
         "reply" => trim($reply),

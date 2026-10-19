@@ -199,7 +199,7 @@ export function initAssistantChat({
                     source: "assistant-chat",
                     page: "assistant"
                 },
-                history
+                history: history.slice(0, -1)
             });
 
             const reply = String(response.reply || "").trim() || "No pude generar una respuesta ahora mismo.";

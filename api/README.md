@@ -1,181 +1,81 @@
-# API (Chat + Contacto)
+# API de contacto y asistente
 
-Este directorio deja funcionales los endpoints `POST /api/chat.php` y `POST /api/contact.php` para Hostinger compartido (PHP).
+Backend PHP 8.1+ para el proyecto de aprendizaje. Motor activo: `assistant-v2`; las reglas comerciales viven en `knowledge/motor.json`. No requiere base de datos. La IA real requiere cURL.
 
-## Archivos
-- `chat.php`: endpoint de chat (motor comercial v2)
-- `contact.php`: endpoint de contacto (valida y guarda leads)
-- `bootstrap.php`: helpers comunes (JSON, validacion, rate limit, HTTP)
-- `assistant-v2/`: nuevo motor conversacional (LLM libre + extraccion + cierre comercial natural)
-- `knowledge/`: base de conocimiento del negocio (servicios, FAQ, capacidades, proceso, CTA, objeciones)
-- `.env` (crear manualmente): secretos y config privada
-- `.env.example`: plantilla de variables
-- `health.php`: healthcheck protegido por token
-- `.user.ini`: ajustes PHP de produccion (`display_errors=0`)
-- `.htaccess`: bloquea dotfiles y habilita rutas limpias opcionales
+## Arranque
 
-## Activacion
-1. Copia `api/.env.example` a `api/.env`.
-2. Define `DEEPSEEK_API_KEY` en `api/.env`.
-3. (Opcional) Define `CONTACT_NOTIFY_EMAIL` para aviso por email.
-4. Define `HEALTHCHECK_TOKEN` para habilitar `GET /api/health.php`.
-5. Verifica permisos de escritura para `storage/`.
-6. Sube `api/` y `storage/` a `public_html/`.
+Desde la raíz: `php -S 127.0.0.1:8081 -t . router.php`. No utilices el servidor PHP sin router ni sirvas esta carpeta con un servidor estático genérico. El servidor Node incluido bloquea la API y sirve solo frontend.
 
-### Configuracion recomendada para Groq (pruebas)
-- `DEEPSEEK_API_BASE=https://api.groq.com/openai/v1`
-- `DEEPSEEK_MODEL=llama-3.1-8b-instant`
-- `DEEPSEEK_API_KEY=<tu_groq_api_key>`
+Si no existe tu archivo privado, copia `.env.example` como `.env`, sin sobrescribir una configuración existente. La plantilla usa `APP_MODE=demo`: el asistente responde con una demostración identificada, no llama a IA ni conserva conversaciones, y contacto no guarda ni envía solicitudes.
 
-## Variables del agente
-- `CHAT_HISTORY_MAX_ITEMS`: historial maximo recibido del frontend (default 10).
-- `CHAT_MEMORY_MAX_TURNS`: cantidad de turnos guardados por sesion.
-- `CHAT_V2_MEMORY_PATH`: memoria persistente especifica del motor v2.
-- `CHAT_V2_READINESS_THRESHOLD`: umbral (0-100) para pasar a fase de cierre comercial.
-- `CHAT_V2_CLOSE_SOFT_ATTEMPTS`: intentos suaves maximos para pedir contacto antes de CTA abierta.
-- `CHAT_V2_TEMPERATURE`: temperatura del modelo para respuestas v2.
-- `CHAT_V2_MAX_TOKENS`: limite de salida del modelo por turno en v2.
-- `CHAT_KNOWLEDGE_PATH`: carpeta de conocimiento (`./knowledge`).
-- `CHAT_RETRIEVAL_BLOCKS`: numero de bloques de contexto por respuesta.
-- `CHAT_QUOTE_NOTIFY_EMAIL`: correo que recibe las solicitudes de cotizacion confirmadas.
-- `CHAT_QUOTE_STORAGE_PATH`: ruta de respaldo para guardar cotizaciones si falla el envio por correo.
+`APP_MODE=live` habilita el flujo real. Por compatibilidad, si la variable no existe se conserva el comportamiento real de las instalaciones previas. Las variables del proceso prevalecen sobre `.env`. `APP_LOAD_ENV=0` impide cargar el archivo privado y se utiliza para aislar las pruebas; no debe sustituir la configuración real de un despliegue.
 
-## Ajustes recomendados de seguridad
-- `api/.htaccess` bloquea acceso a dotfiles (`.env`, `.user.ini`, etc).
-- `api/.user.ini` deja `display_errors=0` en produccion.
-- Usa `.htaccess` en raiz del proyecto para forzar `http -> https`.
-- Valida que toda peticion final use `https://`.
+## Configuración
 
-## Endpoint de chat
-- URL recomendada: `/api/chat.php`
-- URL limpia opcional: `/api/chat`
-- Metodo: `POST`
-- Flujo v2 (por defecto):
-  1. Chat libre desde el primer mensaje (sin gate obligatorio de nombre/correo).
-  2. El LLM resuelve dudas y extrae datos comerciales en paralelo.
-  3. Cuando el briefing esta maduro, el agente pide contacto de forma natural.
-  4. Con nombre + correo validos y confirmacion explicita del usuario, se envia solicitud de cotizacion.
-  5. Si falla el correo, la solicitud se guarda en almacenamiento de respaldo para seguimiento.
-  6. Si no comparte contacto, no se bloquea el chat: se deja CTA abierta.
-  7. Si piden fuera de alcance (ej. app movil nativa), el agente reconduce a alternativa web/PWA sin cortar la conversacion.
-- Body JSON (ejemplo):
+| Variable | Uso |
+|---|---|
+| `APP_MODE` | `demo` o `live` |
+| `API_ENV_FILE` | Ruta opcional de un archivo de entorno privado fuera de la raíz pública |
+| `DEEPSEEK_API_KEY` | Clave privada del proveedor compatible; el nombre histórico se conserva |
+| `DEEPSEEK_API_BASE` | Base HTTPS; por defecto Groq OpenAI-compatible |
+| `DEEPSEEK_MODEL` | Modelo permitido por tu cuenta; por defecto `llama-3.1-8b-instant` |
+| `API_CA_FILE` | Archivo PEM de autoridades fiable, opcional |
+| `CHAT_GLOBAL_DAILY_MAX` | Límite global diario de mensajes, por defecto 200 |
+| `CONTACT_GLOBAL_HOURLY_MAX` | Límite global de contacto por hora, por defecto 100 |
+| `TRUSTED_PROXIES` | IPs exactas de proxies de confianza, separadas por coma; vacío por defecto |
+| `RATE_LIMIT_DIR` | Directorio de contadores fuera de la raíz pública; por defecto en temporales del sistema |
+| `CHAT_SESSION_TTL_SECONDS` | Caducidad de memoria inactiva; por defecto siete días |
+| `CHAT_V2_MEMORY_PATH` | Directorio de memoria por sesión |
+| `CONTACT_STORAGE_PATH` / `CHAT_QUOTE_STORAGE_PATH` | Archivos privados de contactos y cotizaciones |
+| `CONTACT_NOTIFY_EMAIL` / `CHAT_QUOTE_NOTIFY_EMAIL` | Destinatarios privados opcionales |
+| `PUBLIC_CONTACT_EMAIL` / `PUBLIC_CONTACT_WHATSAPP` | Canales opcionales de fallback, nunca hardcodeados |
+| `HEALTHCHECK_TOKEN` | Secreto del healthcheck, enviado como cabecera |
+
+La plantilla conserva las demás variables de historial, readiness, tono, tokens, rate limit y anti-spam. La salida de IA se acota a 1.200 tokens y TLS siempre se verifica. Windows utiliza confianza nativa de cURL si está disponible. Las rutas absolutas de almacenamiento funcionan también en Windows.
+
+## Endpoints
+
+### `POST /api/chat.php` (alias `/api/chat`)
+
+Content-Type: `application/json`; cuerpo máximo de 64 KiB.
 
 ```json
 {
-  "sessionId": "sess_demo_123",
-  "message": "Quiero una landing para captar leads",
-  "context": {
-    "source": "assistant-chat",
-    "page": "assistant"
-  },
-  "history": [
-    { "role": "user", "content": "hola" },
-    { "role": "assistant", "content": "Hola, cuentame tu objetivo." }
-  ]
+  "message": "Ejemplo ficticio: quiero practicar una landing",
+  "context": { "source": "demo", "page": "assistant" },
+  "history": []
 }
 ```
 
-- Respuesta esperada:
+`sessionId` sigue siendo aceptado por compatibilidad, pero no determina qué memoria se carga. El servidor vincula la sesión a una cookie de propiedad `HttpOnly` y devuelve un ID derivado. Los clientes que necesiten continuidad deben conservar esa cookie; el navegador lo hace con `credentials: same-origin`. Copiar el ID de otro cliente no permite acceder a su memoria.
 
-```json
-{
-  "reply": "Respuesta del agente",
-  "sessionId": "sess_demo_123",
-  "source": "api-v2",
-  "lead": {
-    "projectType": "web-corporativa",
-    "requestedPlatform": "web",
-    "stackPreference": "",
-    "collaborationMode": "",
-    "problem": "",
-    "objective": "",
-    "timeline": "",
-    "contact": {
-      "name": "",
-      "email": "",
-      "phone": "",
-      "status": "not_requested"
-    }
-  },
-  "readinessScore": 42,
-  "nextBestAction": "clarify",
-  "closeAttempt": "none",
-  "canSendQuote": false,
-  "scopeStatus": "supported",
-  "leadStatus": "collecting-data",
-  "missingFields": ["problem", "objective", "timeline"]
-}
-```
+Se conservan `reply`, `sessionId`, `source`, `suggestions`, `lead`, `missingFields`, `readinessScore`, `nextBestAction`, `closeAttempt`, `canSendQuote`, `leadStage`, `leadStatus`, `scopeStatus` y, cuando corresponde, `quoteSendResult`, `quoteSendReason`, `retryAfter`. `source=demo` identifica una respuesta sin IA externa.
 
-## Endpoint de contacto
-- URL recomendada: `/api/contact.php`
-- URL limpia opcional: `/api/contact`
-- Metodo: `POST`
-- Body JSON (ejemplo):
+En modo real, el LLM recibe el mensaje, parte del historial, contexto de negocio y datos comerciales disponibles. La respuesta pasa por normalización y `policy-guard`, que es un filtro heurístico, no una garantía contra errores. El cierre requiere briefing útil, contacto válido y confirmación después del estado de cierre final. Si falla el correo pero se guarda la cotización, se informa como pendiente de seguimiento.
 
-```json
-{
-  "name": "Ana Perez",
-  "email": "ana@empresa.com",
-  "company": "Empresa SA",
-  "inquiryType": "producto",
-  "message": "Necesito una landing para captacion de leads B2B",
-  "source": "portfolio-web",
-  "website": "",
-  "formStartedAt": 1760000000000,
-  "submittedAt": 1760000008000,
-  "createdAt": "2026-03-02T10:00:00.000Z"
-}
-```
+### `POST /api/contact.php` (alias `/api/contact`)
 
-- Respuesta esperada:
+Campos: `name`, `email`, `company` opcional, `inquiryType`, `message`, `source` opcional y los filtros auxiliares `website`, `formStartedAt`, `submittedAt`. Se usan tipos y tamaños limitados; la fecha almacenada la fija el servidor.
 
-```json
-{
-  "status": "ok",
-  "id": "lead_xxxxxxxxxxxxxxxx",
-  "stored": true,
-  "notified": false
-}
-```
+- Modo demo: `{"status":"demo","stored":false,"notified":false}`.
+- Aceptación real: `status=ok`, `stored=true`, con `notified` indicando si `mail()` aceptó el aviso.
+- Un 200 con `stored=false` no acredita recepción real. El frontend comprueba el cuerpo y no guarda ni reintenta borradores en `localStorage`.
 
-## Dato de almacenamiento
-- Leads guardados en `storage/contacts.ndjson` (una linea JSON por contacto).
-- Memoria de chat motor v2: `storage/chat-sessions-v2/<sessionId>.json`.
+### `GET /api/health.php` (alias `/api/health`)
 
-## Anti-spam aplicado
-- Honeypot (`website`) para bots que rellenan todos los campos.
-- Time-trap (`formStartedAt`/`submittedAt`) para bloquear envios demasiado rapidos.
-- Rate limit por IP y limite diario por email.
-- Rate limit en chat para evitar abuso de requests.
-- En v2 no hay gate inicial de contacto: el cierre comercial se hace de forma progresiva.
+Requiere `X-Health-Token` con el valor configurado. No acepta tokens en la URL, no devuelve rutas internas y no escribe archivos. Comprueba configuración y permisos de forma no destructiva. Bajo HTTP local puede devolver 503 porque no hay HTTPS; eso no impide probar la demo.
 
-## Regla comercial en chat
-- No mostrar precios ni descuentos en el chat.
-- Si preguntan precio, indicar que Andres enviara el detalle real cuando se confirme la cotizacion.
-
-## Healthcheck
-- URL: `/api/health.php?token=TU_TOKEN`
-- Requiere `HEALTHCHECK_TOKEN` en `.env`.
-- Valida HTTPS, `display_errors`, acceso a storage y presencia de `DEEPSEEK_API_KEY`.
-
-## Verificacion automatizada en dominio
-- Ejecuta:
+## Pruebas y despliegue
 
 ```bash
-node scripts/verify-production.mjs https://tu-dominio.com TU_HEALTHCHECK_TOKEN
+node --test tests/*.test.mjs
+php tests/security.php
+node scripts/block-hardcode.mjs --history
+node scripts/release-version.mjs verify
 ```
 
-- Alternativa con variable de entorno:
+Las pruebas fuerzan `APP_LOAD_ENV=0`, usan proveedor simulado y almacenamiento temporal. No consumen claves reales ni envían correo. La prueba visual opcional es `node tests/interface.mjs`.
 
-```bash
-HEALTHCHECK_TOKEN=tu_token node scripts/verify-production.mjs https://tu-dominio.com
-```
+`node scripts/verify-production.mjs https://tu-dominio.com` hace comprobaciones de lectura. El token se toma solo de `HEALTHCHECK_TOKEN` en el entorno. `--exercise` autoriza POST que pueden consumir cuota, guardar solicitudes o enviar correo en modo real: no lo uses contra producción sin entender esos efectos.
 
-- El script revisa:
-  - bloqueo de `api/.env`
-  - guardas de metodo en `chat.php` y `contact.php`
-  - ocultamiento de `X-Powered-By`
-  - aliases `/api/chat` y `/api/contact`
-  - redireccion `http -> https`
-  - flujo real de POST en chat y contacto
+Apache necesita los `.htaccess` del proyecto y los subdirectorios. Nginx requiere restricciones equivalentes. Antes de un despliegue real, revisa cuotas del proveedor, acceso, permisos, privacidad, retención de contactos/cotizaciones y derechos de los recursos. GitHub Pages sirve HTML, pero no este backend PHP.

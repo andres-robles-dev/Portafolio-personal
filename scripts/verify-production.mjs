@@ -48,11 +48,12 @@ function extractReleaseIds(htmlText) {
 }
 
 async function main() {
-    const [, , baseUrlArg, healthTokenArg] = process.argv;
-    const healthToken = healthTokenArg || process.env.HEALTHCHECK_TOKEN || "";
+    const [, , baseUrlArg] = process.argv;
+    const healthToken = process.env.HEALTHCHECK_TOKEN || "";
+    const exercise = process.argv.includes('--exercise');
 
     if (!baseUrlArg) {
-        console.error("Uso: node scripts/verify-production.mjs https://tu-dominio.com [healthToken]");
+        console.error("Uso: node scripts/verify-production.mjs https://tu-dominio.com [--exercise]. Token solo en entorno.");
         process.exit(1);
     }
 
@@ -65,11 +66,19 @@ async function main() {
 
     const checks = [];
     const baseHost = new URL(baseUrl).host;
+    const local = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(baseUrl).hostname);
+    if (!baseUrl.startsWith('https://') && !local) throw new Error('Se requiere HTTPS fuera de localhost.');
 
     const dotEnvProbe = await request(`${baseUrl}/api/.env`);
     const dotEnvBlocked = dotEnvProbe.status === 403 || dotEnvProbe.status === 404;
     checks.push(dotEnvBlocked);
     logCheck("Bloqueo de /api/.env", dotEnvBlocked, `HTTP ${dotEnvProbe.status}`);
+    for (const path of ['/.git/config', '/storage/contacts.ndjson', '/api/bootstrap.php', '/local-server.mjs']) {
+        const result = await request(`${baseUrl}${path}`);
+        const blocked = [403, 404].includes(result.status);
+        checks.push(blocked);
+        logCheck(`Bloqueo de ${path}`, blocked, `HTTP ${result.status}`);
+    }
 
     const chatGet = await request(`${baseUrl}/api/chat.php`);
     const chatMethodGuard = chatGet.status === 405;
@@ -133,6 +142,8 @@ async function main() {
             : `index=${uniqueIndexReleaseIds.join(",") || "none"}, asistente=${uniqueAssistantReleaseIds.join(",") || "none"}`
     );
 
+    if (exercise) {
+    console.log('[AVISO] --exercise realiza POST: puede consumir cuota y almacenar solicitudes o enviar correo en modo real.');
     const chatPost = await request(`${baseUrl}/api/chat.php`, {
         method: "POST",
         headers: {
@@ -184,17 +195,22 @@ async function main() {
     const contactPostOk = contactPost.status === 200 && contactPost.payload && contactPost.payload.status === "ok";
     checks.push(contactPostOk);
     logCheck("POST /api/contact.php", contactPostOk, `HTTP ${contactPost.status}`);
+    } else {
+        console.log('[SKIP] POST de chat/contacto: requiere --exercise para autorizar sus efectos.');
+    }
 
     if (healthToken) {
-        const health = await request(`${baseUrl}/api/health.php?token=${encodeURIComponent(healthToken)}`);
+        const health = await request(`${baseUrl}/api/health.php`, { headers: { 'X-Health-Token': healthToken } });
         const healthOk = health.status === 200 && health.payload && health.payload.ok === true;
         checks.push(healthOk);
         logCheck("GET /api/health.php", healthOk, `HTTP ${health.status}`);
     } else {
-        console.log("[SKIP] GET /api/health.php -> no se paso token (argumento ni HEALTHCHECK_TOKEN)");
+        console.log("[SKIP] GET /api/health.php -> sin HEALTHCHECK_TOKEN en entorno");
     }
 
-    if (!baseUrl.startsWith("https://")) {
+    if (local) {
+        console.log('[SKIP] HTTPS y redireccion: servidor local.');
+    } else if (!baseUrl.startsWith("https://")) {
         checks.push(false);
         logCheck("Uso de HTTPS", false, "La URL base no usa https://");
     } else {

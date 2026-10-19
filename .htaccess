@@ -3,6 +3,12 @@ Options -Indexes
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
+RewriteRule (^|/)\. - [F,L]
+RewriteRule ^(?:storage|scripts|tests)(?:/|$) - [F,L,NC]
+RewriteRule ^api/(?!chat(?:\.php)?$|contact(?:\.php)?$|health(?:\.php)?$) - [F,L,NC]
+RewriteRule \.(?:env|ini|ndjson|log|bak|sql|md|mjs)$ - [F,L,NC]
+RewriteRule ^router\.php$ - [F,L,NC]
+
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

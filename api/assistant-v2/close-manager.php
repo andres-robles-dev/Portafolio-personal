@@ -13,6 +13,7 @@ function agent_v2_next_action(array $state): array
     $closeAttempts = max(0, (int) ($state["closeAttempts"] ?? 0));
     $maxSoftAttempts = max(1, (int) ($state["maxSoftAttempts"] ?? 2));
     $missingBriefFields = is_array($state["missingBriefFields"] ?? null) ? $state["missingBriefFields"] : [];
+    $lastAction = trim((string) ($state["lastAction"] ?? ""));
 
     if ($quoteSent) {
         return [
@@ -50,6 +51,22 @@ function agent_v2_next_action(array $state): array
     $closeWindowOpen = $readinessScore >= $threshold || ($priceIntent && $readinessScore >= $closeWindowThreshold);
 
     if ($closeWindowOpen && !$contactComplete) {
+        if ($lastAction === "close_soft" && !$priceIntent) {
+            if (!empty($missingBriefFields)) {
+                return [
+                    "nextBestAction" => "clarify",
+                    "closeAttempt" => "none",
+                    "incrementCloseAttempt" => false
+                ];
+            }
+
+            return [
+                "nextBestAction" => "explore",
+                "closeAttempt" => "none",
+                "incrementCloseAttempt" => false
+            ];
+        }
+
         if ($closeAttempts < $maxSoftAttempts) {
             return [
                 "nextBestAction" => "close_soft",

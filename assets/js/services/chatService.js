@@ -1,31 +1,12 @@
 import {
     CHAT_API_ENDPOINT,
-    CHAT_API_TIMEOUT_MS,
-    CHAT_SESSION_STORAGE_KEY
+    CHAT_API_TIMEOUT_MS
 } from "../core/constants.js";
 
-function createSessionId() {
-    if (window.crypto?.randomUUID) {
-        return window.crypto.randomUUID();
-    }
-
-    return `sess_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
-}
+let currentSessionId = '';
 
 function getSessionId() {
-    try {
-        const existing = localStorage.getItem(CHAT_SESSION_STORAGE_KEY);
-
-        if (existing) {
-            return existing;
-        }
-
-        const created = createSessionId();
-        localStorage.setItem(CHAT_SESSION_STORAGE_KEY, created);
-        return created;
-    } catch {
-        return createSessionId();
-    }
+    return currentSessionId;
 }
 
 function createLeadShape(overrides = {}) {
@@ -180,7 +161,8 @@ export async function requestChatReply(message, options = {}) {
                 context,
                 history
             }),
-            signal: controller.signal
+            signal: controller.signal,
+            credentials: 'same-origin'
         });
 
         const rawBody = await response.text().catch(() => "");
@@ -214,6 +196,7 @@ export async function requestChatReply(message, options = {}) {
         }
 
         const normalized = normalizeResponsePayload(parsed, sessionId);
+        if (/^[a-f0-9]{64}$/.test(normalized.sessionId)) currentSessionId = normalized.sessionId;
 
         if (!normalized.reply) {
             return createResponse({

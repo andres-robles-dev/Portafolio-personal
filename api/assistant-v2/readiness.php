@@ -111,24 +111,16 @@ function agent_v2_is_confirmation_intent(string $message): bool
     return false;
 }
 
-function agent_v2_brief_is_complete(array $lead): bool
-{
-    return empty(agent_v2_missing_brief_fields($lead));
-}
-
 function agent_v2_brief_has_minimum_for_handoff(array $lead): bool
 {
-    $projectType = trim((string) ($lead["projectType"] ?? ""));
     $objective = trim((string) ($lead["objective"] ?? ""));
-    $problem = trim((string) ($lead["problem"] ?? ""));
     $timeline = trim((string) ($lead["timeline"] ?? ""));
-    $scopeNotes = trim((string) ($lead["scopeNotes"] ?? ""));
 
-    if ($projectType === "" || $objective === "") {
+    if ($objective === "" || $timeline === "") {
         return false;
     }
 
-    return $problem !== "" || $timeline !== "" || $scopeNotes !== "";
+    return true;
 }
 
 function agent_v2_scope_is_supported(array $lead): bool
@@ -144,7 +136,9 @@ function agent_v2_needs_scope_reframe(array $lead): bool
 
 function agent_v2_can_send_quote(array $lead, int $score, array $config): bool
 {
-    return $score >= agent_v2_readiness_threshold($config)
+    $effectiveThreshold = max(40, agent_v2_readiness_threshold($config) - 20);
+
+    return $score >= $effectiveThreshold
         && agent_v2_brief_has_minimum_for_handoff($lead)
         && agent_v2_scope_is_supported($lead)
         && agent_v2_contact_is_valid($lead);

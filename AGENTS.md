@@ -11,7 +11,7 @@
 - Endpoints:
   - `POST /api/chat.php`
   - `POST /api/contact.php`
-  - `GET /api/health.php?token=...`
+  - `GET /api/health.php` con `X-Health-Token`
 - Motor activo: `api/assistant-v2/*`.
 
 ## Estructura clave
@@ -30,7 +30,7 @@
   - `api/contact.php`
   - `api/health.php`
   - `api/assistant-v2/*`
-  - `api/knowledge/*.json`
+  - `api/knowledge/motor.json`
 - Persistencia:
   - `storage/contacts.ndjson`
   - `storage/chat-sessions-v2/*.json`
@@ -45,7 +45,7 @@
 
 ## Comandos de desarrollo
 - Local recomendado (frontend + API):
-  - `php -S 127.0.0.1:8080 -t .`
+  - `php -S 127.0.0.1:8081 -t . router.php` (PowerShell: `$env:APP_MODE='demo'` para pruebas manuales sin efectos reales)
 - Local solo estatico (sin API):
   - `node local-server.mjs`
   - `http://127.0.0.1:4173`
@@ -66,6 +66,9 @@
 ## Build, lint y test
 - No hay build formal.
 - No hay ESLint/Prettier/PhpUnit configurados.
+- Pruebas aisladas: `node --test tests/*.test.mjs` y `php tests/security.php`.
+- Prueba visual opcional: `node tests/interface.mjs` (Chrome/Chromium, o `CHROME_PATH`).
+- No leer `api/.env`, consumir IA real, enviar correos ni escribir en el almacenamiento habitual durante pruebas; forzar `APP_LOAD_ENV=0` y rutas temporales.
 - Validacion minima obligatoria:
   - sintaxis JS tocado
   - sintaxis PHP tocado
@@ -78,19 +81,22 @@
 - PHP (single file):
   - `php -l api/assistant-v2/orchestrator.php`
 - JSON (single file):
-  - `node -e "JSON.parse(require('fs').readFileSync('api/knowledge/cta.json','utf8'))"`
+  - `node -e "JSON.parse(require('fs').readFileSync('api/knowledge/motor.json','utf8'))"`
 - Release/version:
   - `node scripts/release-version.mjs verify`
+- Hardcode guard:
+  - `node scripts/block-hardcode.mjs`
 
 ## Single test commands (sin framework)
+- Ejecutar los POST siguientes solo contra un servidor iniciado con `APP_MODE=demo`; en modo real tienen efectos.
 - Chat:
   - `curl -X POST http://127.0.0.1:8080/api/chat.php -H "Content-Type: application/json" -d "{\"sessionId\":\"sess_smoke_1\",\"message\":\"Quiero una landing para captar leads\",\"context\":{\"source\":\"qa\",\"page\":\"assistant\"},\"history\":[]}"`
 - Contacto:
   - `curl -X POST http://127.0.0.1:8080/api/contact.php -H "Content-Type: application/json" -d "{\"name\":\"QA Test\",\"email\":\"qa@example.com\",\"company\":\"Test\",\"inquiryType\":\"producto\",\"message\":\"Necesito una landing para captar leads B2B con objetivo comercial.\",\"source\":\"qa\",\"formStartedAt\":1760000000000,\"submittedAt\":1760000008000,\"createdAt\":\"2026-03-01T10:00:00.000Z\"}"`
 - Health produccion:
-  - `node scripts/verify-production.mjs https://tu-dominio.com TU_HEALTHCHECK_TOKEN`
+  - `node scripts/verify-production.mjs https://tu-dominio.com` (token solo en entorno)
 - Cache/version en produccion:
-  - `node scripts/verify-production.mjs https://tu-dominio.com TU_HEALTHCHECK_TOKEN`
+  - `node scripts/verify-production.mjs https://tu-dominio.com` (lectura por defecto; `--exercise` autoriza POST con efectos)
   - validar que reporta `Version unificada entre index y asistente` en `OK`
 
 ## Contrato chat (frontend)
@@ -140,12 +146,21 @@
 - Maximo una pregunta de avance por turno.
 - No forzar el cierre; guiar con naturalidad.
 - Si piden app movil nativa, reencuadrar a alternativa web/PWA por fases.
+- Si no hay evidencia suficiente, responder con transparencia y hacer una sola pregunta clave.
+- Cualquier respuesta final del LLM debe pasar por `policy-guard` antes de salir al frontend.
 
 ## Seguridad y configuracion
 - Nunca commitear `api/.env`.
+- Nunca hardcodear emails reales, telefonos o secretos en codigo/documentacion del repo.
 - Mantener `.htaccess` en raiz, `api/`, `api/assistant-v2/`, `api/knowledge/` y `storage/`.
 - Produccion con HTTPS.
 - Revisar permisos de `storage/` antes de desplegar.
+- No servir el proyecto con un servidor estatico generico ni PHP sin `router.php`.
+- `APP_MODE=demo` no utiliza IA externa ni conserva contactos/conversaciones; el modo real requiere configuracion explicita en instalaciones nuevas.
+- `sessionId` es de compatibilidad: la propiedad se deriva de una cookie aleatoria HttpOnly, no del JSON del cliente.
+- No reanudar memoria caducada ni borrar datos historicos automaticamente; limpieza explicita con `scripts/cleanup-memory.php --apply`.
+- No guardar ni reenviar contactos automaticamente desde localStorage; borrar borradores antiguos solo a peticion del usuario.
+- No confiar en X-Forwarded-For salvo proxies incluidos expresamente en TRUSTED_PROXIES.
 
 ## Flujo de cierre (critico)
 - Para enviar cotizacion:
@@ -173,3 +188,4 @@
 - Si cambias contratos o reglas comerciales:
   - actualiza `AGENTS.md` y `api/README.md` en el mismo cambio.
 - No reintroducir motor legacy ni rutas fuera de `assistant-v2`.
+- Mantener una sola fuente de reglas de negocio en `api/knowledge/motor.json`.

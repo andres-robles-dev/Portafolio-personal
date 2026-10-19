@@ -34,14 +34,9 @@ body * {
 .logo,
 .nav-link,
 .nav-panel a,
-.hero-chat-title,
-.hero-chat-status,
 .section-label,
 .section-label-dark,
 .project-tag,
-.detail-tag,
-.detail-pill,
-.detail-btn,
 .project-modal-btn,
 .project-modal-tag,
 .project-modal-meta,
@@ -49,9 +44,7 @@ body * {
 .contact-submit,
 .contact-action-main,
 .contact-action-secondary,
-.hero-action,
-.hero-chat-prompt,
-.hero-chat-send {
+.hero-action {
     font-family: var(--base-font);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -68,52 +61,31 @@ body * {
 .column-right,
 .about-container,
 .experience-grid,
-.experience-card,
 .project-item,
 .project-visual,
 .contact-form,
-.assistant-intro,
-.assistant-chat-wrap,
-.detail-hero,
-.detail-block,
-.detail-gallery-card,
-.detail-footer-actions,
 .project-modal-dialog,
 .project-modal-side,
 .project-modal-media,
 .project-modal-story-media,
-.hero-chat,
-.hero-chat-header,
-.hero-chat-form,
-.hero-chat-message,
 .project-modal-header,
-.detail-pill,
-.detail-tag,
 .project-tag,
 .hero-action,
 .contact-btn,
 .contact-action-main,
 .contact-action-secondary,
 .contact-submit,
-.detail-btn,
 .project-modal-btn,
-.hero-chat-prompt,
-.hero-chat-send,
-.hero-chat-input,
 .contact-field input,
 .contact-field select,
 .contact-field textarea,
 .project-modal-close,
 .project-modal-meta span,
 .project-modal-deliverable,
-.detail-deliverable,
 .hero-intro-foot,
 .hero-panel-head,
 .footer,
-.method-layout,
-.method-timeline,
-.method-step,
-.method-intro {
+.method-step {
     border: 0 !important;
     box-shadow: none !important;
     outline: none;
@@ -130,7 +102,6 @@ body * {
 .contact-section,
 .footer,
 .assistant-page,
-.product-detail-main,
 .hero-intro,
 .hero-center,
 .column-right,
@@ -138,22 +109,12 @@ body * {
 .method-step,
 .project-item,
 .contact-form,
-.assistant-intro,
-.assistant-chat-wrap,
-.detail-hero,
-.detail-block,
-.detail-gallery-card,
-.detail-footer-actions,
 .project-modal-dialog,
 .project-modal-side,
-.hero-chat,
-.hero-chat-header,
-.hero-chat-form,
 .project-modal-header,
 .project-modal-media,
 .project-modal-story-media,
-.project-visual,
-.detail-not-found {
+.project-visual {
     background: transparent !important;
 }
 
@@ -163,19 +124,11 @@ body * {
 .nav-panel a,
 .hero-title,
 .hero-panel-title,
-.hero-value-title,
 .about-big,
 .section-title,
 .project-info h3,
 .contact-title,
-.assistant-title,
-.detail-title,
 .project-modal-title,
-.detail-not-found h1,
-.hero-chat-title,
-.hero-chat-status,
-.hero-chat-message.assistant,
-.hero-chat-input,
 .contact-field input,
 .contact-field select,
 .contact-field textarea,
@@ -183,14 +136,9 @@ body * {
 .project-modal-summary,
 .project-modal-subtitle,
 .project-modal-deliverable,
-.detail-summary p,
-.detail-subtitle,
-.assistant-copy,
 .contact-subtitle,
 .project-info p,
-.experience-description,
 .about-side p,
-.hero-value-copy,
 .hero-subtitle {
     color: var(--fg);
 }
@@ -200,12 +148,9 @@ body * {
 .hero-availability,
 .section-label,
 .section-label-dark,
-.assistant-kicker,
-.detail-kicker,
 .project-number,
 .project-modal-kicker,
 .project-modal-side-title,
-.detail-block h2,
 .contact-field span,
 .footer p,
 .social-link,
@@ -270,8 +215,7 @@ body * {
     background: #fff;
 }
 
-.project-item::before,
-.column-2::after {
+.project-item::before {
     display: none !important;
 }
 
@@ -288,14 +232,8 @@ body * {
 .contact-action-secondary:focus-visible,
 .contact-submit:hover,
 .contact-submit:focus-visible,
-.detail-btn:hover,
-.detail-btn:focus-visible,
 .project-modal-btn:hover,
 .project-modal-btn:focus-visible,
-.hero-chat-prompt:hover,
-.hero-chat-prompt:focus-visible,
-.hero-chat-send:hover,
-.hero-chat-send:focus-visible,
 .project-modal-close:hover,
 .project-modal-close:focus-visible {
     transform: none !important;
@@ -307,10 +245,7 @@ body * {
 .contact-action-main,
 .contact-action-secondary,
 .contact-submit,
-.detail-btn,
 .project-modal-btn,
-.hero-chat-prompt,
-.hero-chat-send,
 .project-modal-close {
     color: var(--fg);
     background: transparent;
@@ -322,9 +257,7 @@ body * {
 .hero-action-primary,
 .contact-action-main,
 .contact-submit,
-.detail-btn-primary,
-.project-modal-btn-primary,
-.hero-chat-send {
+.project-modal-btn-primary {
     background: transparent;
     color: #fff;
 }
@@ -335,35 +268,12 @@ body * {
 .contact-action-main:focus-visible,
 .contact-submit:hover,
 .contact-submit:focus-visible,
-.detail-btn-primary:hover,
-.detail-btn-primary:focus-visible,
 .project-modal-btn-primary:hover,
-.project-modal-btn-primary:focus-visible,
-.hero-chat-send:hover,
-.hero-chat-send:focus-visible {
+.project-modal-btn-primary:focus-visible {
     color: rgba(242, 242, 242, 0.76);
     background: transparent;
 }
 
-.hero-chat {
-    background: transparent !important;
-}
-
-.hero-chat-message.assistant {
-    background: rgba(255, 255, 255, 0.06) !important;
-}
-
-.hero-chat-message.user {
-    background: rgba(255, 255, 255, 0.9) !important;
-    color: #050505;
-}
-
-.status-dot {
-    background: #f1f1f1;
-    box-shadow: none;
-}
-
-.hero-chat-input,
 .contact-field input,
 .contact-field select,
 .contact-field textarea {
@@ -371,13 +281,11 @@ body * {
     color: #fff;
 }
 
-.hero-chat-input::placeholder,
 .contact-field input::placeholder,
 .contact-field textarea::placeholder {
     color: rgba(242, 242, 242, 0.5);
 }
 
-.hero-chat-input:focus,
 .contact-field input:focus,
 .contact-field select:focus,
 .contact-field textarea:focus {
@@ -393,8 +301,6 @@ body * {
 }
 
 .project-tag,
-.detail-tag,
-.detail-pill,
 .project-modal-tag,
 .project-modal-meta span,
 .project-number {
@@ -440,8 +346,7 @@ body * {
 .center-cover,
 .project-thumb,
 .project-modal-media img,
-.project-modal-story-media img,
-.detail-gallery-card img {
+.project-modal-story-media img {
     filter: grayscale(1) contrast(1.1);
 }
 
@@ -513,7 +418,6 @@ body * {
     transition: opacity var(--dur-med) var(--ease-soft), transform var(--dur-med) var(--ease-soft), border-color var(--dur-med) var(--ease-soft);
 }
 
-.method-step.is-focused,
 .method-step:hover {
     opacity: 1;
     border-color: rgba(255, 255, 255, 0.48) !important;
@@ -527,15 +431,6 @@ body * {
 .project-item.is-linked {
     border: 0 !important;
     outline: none;
-}
-
-.method-link {
-    color: rgba(242, 242, 242, 0.72);
-}
-
-.method-link:hover,
-.method-link:focus-visible {
-    color: #fff;
 }
 
 @media (max-width: 1023px) {
@@ -568,7 +463,6 @@ button {
 .contact-action-secondary,
 .contact-submit,
 .project-modal-btn,
-.detail-btn,
 .assistant-chat-send,
 .project-modal-close {
     font-size: 0.66rem;
@@ -590,8 +484,6 @@ button {
 .contact-submit:focus-visible,
 .project-modal-btn:hover,
 .project-modal-btn:focus-visible,
-.detail-btn:hover,
-.detail-btn:focus-visible,
 .assistant-chat-send:hover,
 .assistant-chat-send:focus-visible,
 .project-modal-close:hover,
@@ -830,7 +722,6 @@ body {
 .project-info h3,
 .contact-title,
 .project-modal-title,
-.detail-title,
 .assistant-chat-title {
     line-height: 0.94;
 }
@@ -853,7 +744,6 @@ body {
 .contact-action-secondary,
 .contact-submit,
 .project-modal-btn,
-.detail-btn,
 .assistant-chat-send {
     letter-spacing: 0.11em;
 }

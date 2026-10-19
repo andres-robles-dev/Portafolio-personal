@@ -87,6 +87,7 @@ function formatRetryAfter(seconds) {
 }
 
 export function resolveChatMessageMeta(response) {
+    if (response.source === 'demo') return 'Demostracion sin IA externa';
     if (response.source === "fallback") {
         return "Modo degradado";
     }
@@ -95,6 +96,7 @@ export function resolveChatMessageMeta(response) {
 }
 
 export function resolveChatStatus(response) {
+    if (response.source === 'demo') return { tone: 'neutral', text: 'Modo demo: sin envios reales ni memoria de contactos.' };
     const missingFields = normalizeChatFields(response.missingFields);
     const nextBestAction = String(response.nextBestAction || "").trim();
     const leadStatus = String(response.leadStatus || "").trim();

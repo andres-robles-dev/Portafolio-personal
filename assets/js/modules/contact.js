@@ -1,5 +1,5 @@
 import { CONTACT_API_ENDPOINT, CONTACT_API_TIMEOUT_MS } from "../core/constants.js";
-import { getQueuedContactsCount, submitContact, syncQueuedContacts } from "../services/contactService.js";
+import { getQueuedContactsCount, submitContact, clearQueuedContacts } from "../services/contactService.js";
 
 function normalizePayload(form) {
     const formData = new FormData(form);
@@ -106,21 +106,17 @@ export function initContact({
         setFeedback(
             contactFeedback,
             "warning",
-            `Hay ${pendingItems} solicitud/es guardadas pendientes de envío al backend.`
+            `Hay ${pendingItems} borrador/es de una version anterior. No se reenviaran automaticamente.`
         );
 
-        syncQueuedContacts({
-            endpoint: CONTACT_API_ENDPOINT,
-            timeoutMs: CONTACT_API_TIMEOUT_MS
-        }).then((remaining) => {
-            if (remaining === 0) {
-                setFeedback(contactFeedback, "success", "Se sincronizaron correctamente las solicitudes pendientes.");
-            } else {
-                setFeedback(contactFeedback, "warning", `Se mantienen ${remaining} solicitud/es pendientes de sincronizar.`);
-            }
-        }).catch(() => {
-            return;
+        const clearButton = document.createElement('button');
+        clearButton.type = 'button';
+        clearButton.textContent = 'Borrar borradores antiguos';
+        clearButton.addEventListener('click', () => {
+            setFeedback(contactFeedback, 'warning', clearQueuedContacts()
+                ? 'Borradores antiguos eliminados de este navegador.' : 'No se pudo acceder al almacenamiento del navegador.');
         });
+        contactFeedback?.appendChild(clearButton);
     }
 
     function setLoading(loading) {
@@ -182,17 +178,22 @@ export function initContact({
             contactForm.reset();
             markFormStart(contactForm);
             updateFieldErrors(contactForm, {});
-            setFeedback(contactFeedback, "success", "Mensaje enviado. Te responderé en menos de 24h hábiles.");
+            setFeedback(contactFeedback, "success", "Solicitud recibida por el servidor para seguimiento.");
+            return;
+        }
+
+        if (result.status === 'demo') {
+            setFeedback(contactFeedback, 'warning', 'Demostracion completada: no se han guardado tus datos ni enviado correos.');
             return;
         }
 
         markFormStart(contactForm);
 
-        updateFieldErrors(contactForm, {});
+        updateFieldErrors(contactForm, result.fields || {});
         setFeedback(
             contactFeedback,
             "warning",
-            `Solicitud guardada correctamente. Se enviara en cuanto se restablezca la conexion (${result.queuedItems} pendiente/s).`
+            result.message || 'No se pudo enviar la solicitud. No se ha guardado un borrador en el navegador.'
         );
     });
 }

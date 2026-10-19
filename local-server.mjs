@@ -1,10 +1,11 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { dirname, extname, normalize, resolve } from "node:path";
+import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolvePublicPath } from "./scripts/public-paths.mjs";
 
 const HOST = "127.0.0.1";
-const PORT = 4173;
+const PORT = Number(process.env.PORT || 4173);
 const ROOT = dirname(fileURLToPath(import.meta.url));
 
 const MIME = {
@@ -16,7 +17,14 @@ const MIME = {
     ".jpeg": "image/jpeg",
     ".png": "image/png",
     ".svg": "image/svg+xml",
-    ".ico": "image/x-icon"
+    ".ico": "image/x-icon",
+    ".webp": "image/webp",
+    ".avif": "image/avif",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
+    ".otf": "font/otf",
+    ".mp4": "video/mp4"
 };
 
 function cacheHeadersForExtension(extension) {
@@ -47,22 +55,15 @@ function cacheHeadersForExtension(extension) {
 
 const server = createServer(async (req, res) => {
     try {
-        const requestPath = decodeURIComponent((req.url || "/").split("?")[0]);
-        const cleanPath = normalize(requestPath).replace(/^([.][.][/\\])+/, "");
-        const isRoot = cleanPath === "/" || cleanPath === "\\" || cleanPath === "." || cleanPath === "";
-        const target = isRoot ? "index.html" : cleanPath.replace(/^[/\\]/, "");
-        const filePath = resolve(ROOT, target);
-
-        if (!filePath.toLowerCase().startsWith(ROOT.toLowerCase())) {
-            throw new Error("Invalid path");
-        }
-
-        const file = await readFile(filePath);
-        const extension = extname(filePath).toLowerCase();
+        const resolved = await resolvePublicPath(ROOT, req.url || "/");
+        if (!resolved) throw new Error("Not public");
+        const file = await readFile(resolved.file);
+        const extension = resolved.extension;
         const contentType = MIME[extension] || "application/octet-stream";
 
         res.writeHead(200, {
             "Content-Type": contentType,
+            "X-Content-Type-Options": "nosniff",
             ...cacheHeadersForExtension(extension)
         });
         res.end(file);
