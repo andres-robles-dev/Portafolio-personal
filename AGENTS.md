@@ -3,7 +3,8 @@
 ## Objetivo
 - Guia operativa para agentes de codigo en este repositorio.
 - Prioridad: plantilla personal de programador junior, contenido honesto y seguridad.
-- La interfaz no es comercial: sin retrato, redes sociales, catalogo ni proyectos inventados. Formulario y chat visibles son demostraciones locales sin peticiones API.
+- La interfaz no es comercial: foto vacia, sin redes sociales ni proyectos inventados. Mantener la seccion Proyectos vacia y el acceso al agente conectado a la API. Solo el formulario de muestra valida localmente.
+- No eliminar apartados ni reemplazar funcionalidades por demos locales sin peticion explicita. Si falta contenido, conservar la estructura vacia.
 - Hacer cambios pequenos, trazables y compatibles con el contrato actual.
 
 ## Stack y alcance
@@ -140,7 +141,7 @@
   - degradacion sin romper UX
   - feedback claro al usuario
 
-## Reglas del backend de ejemplo opcional (no conectado a la plantilla)
+## Reglas del agente conectado a la API
 - Responder en espanol, tono profesional y directo.
 - No prometer resultados garantizados.
 - No dar precios cerrados en chat.

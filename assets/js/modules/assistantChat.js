@@ -6,7 +6,7 @@ import {
     resolveChatStatus
 } from "./chatFlowSignals.js";
 
-const IDLE_PLACEHOLDER = "Escribe un mensaje de prueba";
+const IDLE_PLACEHOLDER = "Escribe tu mensaje al asistente";
 const UI_HISTORY_MAX_ITEMS = 24;
 
 function createMessageNode(role, text, options = {}) {
@@ -194,10 +194,7 @@ export function initAssistantChat({
         const pendingNode = addMessage("assistant", "", { pending: true });
 
         try {
-            const response = document.body.dataset.templateDemo === 'true' ? {
-                reply: 'Esta interfaz es una practica de JavaScript, sin IA externa. Mi perfil es de programador junior: HTML, CSS, JavaScript, Bootstrap, React, Tailwind CSS, Java, PHP, Spring Boot, Spring Security, APIs REST, PostgreSQL y MySQL.',
-                source: 'demo', suggestions: [], leadStatus: 'demo',
-            } : await requestChatReply(text, {
+            const response = await requestChatReply(text, {
                 context: {
                     source: "assistant-chat",
                     page: "assistant"

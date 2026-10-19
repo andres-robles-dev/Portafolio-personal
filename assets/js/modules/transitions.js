@@ -10,6 +10,7 @@ export function createTransitions({ elements, state, updateOverflow }) {
     const targetMap = {
         about: elements.aboutSection,
         method: elements.experienceSection,
+        work: elements.projectsSection,
         contact: elements.contactSection
     };
 
@@ -33,6 +34,7 @@ export function createTransitions({ elements, state, updateOverflow }) {
 
         elements.aboutSection.classList.add("active");
         setTimeout(() => elements.experienceSection.classList.add("active"), SECTION_STAGGER_DELAYS.experience);
+        setTimeout(() => elements.projectsSection?.classList.add("active"), SECTION_STAGGER_DELAYS.projects);
         setTimeout(() => {
             elements.contactSection.classList.add("active");
             elements.footerSection.classList.add("active");
@@ -87,6 +89,7 @@ export function createTransitions({ elements, state, updateOverflow }) {
 
         elements.aboutSection.classList.remove("active");
         elements.experienceSection.classList.remove("active");
+        elements.projectsSection?.classList.remove("active");
         elements.contactSection.classList.remove("active");
         elements.footerSection.classList.remove("active");
 

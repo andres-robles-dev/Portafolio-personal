@@ -78,6 +78,7 @@ export function initNavigation({ elements, state, updateOverflow, showSections, 
         const trackable = [
             { key: "about", element: elements.aboutSection },
             { key: "method", element: elements.experienceSection },
+            { key: "work", element: elements.projectsSection },
             { key: "contact", element: elements.contactSection }
         ].filter((item) => item.element);
 
@@ -121,21 +122,6 @@ export function initNavigation({ elements, state, updateOverflow, showSections, 
 
         trackable.forEach((item) => observer.observe(item.element));
     }
-
-    elements.centerColumn?.addEventListener("click", () => {
-        setActiveNav(allNavLinks, "about");
-        setHeaderTone(elements.mainNav, "about");
-        showSections("about", { source: "photo" });
-    });
-
-    elements.centerColumn?.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            setActiveNav(allNavLinks, "about");
-            setHeaderTone(elements.mainNav, "about");
-            showSections("about", { source: "photo" });
-        }
-    });
 
     desktopLinks.forEach((link) => {
         link.addEventListener("click", (event) => {

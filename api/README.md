@@ -2,7 +2,7 @@
 
 Backend PHP 8.1+ para el proyecto de aprendizaje. Motor activo: `assistant-v2`; las reglas comerciales viven en `knowledge/motor.json`. No requiere base de datos. La IA real requiere cURL.
 
-La plantilla personal junior actual no consume esta API: su formulario y el chat de muestra validan o responden localmente. Este backend se conserva como ejemplo independiente de la práctica anterior; no hace falta activarlo para ver la web.
+El agente de `asistente.html` consume esta API. El formulario de muestra de la portada valida localmente y no envía solicitudes. No hace falta activar el proveedor IA para ver la portada, pero sí para obtener respuestas reales del agente.
 
 ## Arranque
 

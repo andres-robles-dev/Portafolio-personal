@@ -35,7 +35,7 @@ initDuckRunner();
 initReveal(elements.revealElements);
 
 const entryTarget = new URLSearchParams(window.location.search).get("go");
-const validTargets = new Set(["home", "about", "method", "contact"]);
+const validTargets = new Set(["home", "about", "method", "work", "contact"]);
 
 if (entryTarget && validTargets.has(entryTarget)) {
     requestAnimationFrame(() => {

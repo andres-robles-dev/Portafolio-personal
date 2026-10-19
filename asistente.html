@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat de muestra | Andrés Robles</title>
+    <title>Asistente | Andrés Robles</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/assistant.css?v=20261019-154130" />
+    <link rel="stylesheet" href="assets/css/assistant.css?v=20261019-160615" />
 </head>
 
-<body class="assistant-page" data-template-demo="true">
+<body class="assistant-page" data-nav-active="assistant">
     <nav class="main-nav">
         <div class="logo">ANDRES ROBLES</div>
 
@@ -19,7 +19,9 @@
             <a class="nav-link" data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
             <a class="nav-link" data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
             <a class="nav-link" data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
+            <a class="nav-link" data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
             <a class="nav-link" data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+            <a class="nav-link" data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
         </div>
 
         <div class="menu-toggle" aria-label="Abrir menú" role="button" tabindex="0">
@@ -33,20 +35,22 @@
         <a data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
         <a data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
         <a data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
+        <a data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
         <a data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+        <a data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
     </div>
 
     <main class="assistant-main">
-        <section class="assistant-chat-shell" id="assistantChatShell" data-chat-state="idle" aria-label="Interfaz de chat de muestra">
-            <h1 class="assistant-chat-title font-display" id="assistantChatTitle">Chat de muestra</h1>
-            <p class="font-mono" style="font-size:0.8rem;line-height:1.6">Ejercicio de interfaz con respuestas locales de ejemplo. No utiliza IA, no envia mensajes al servidor ni solicita datos de contacto.</p>
+        <section class="assistant-chat-shell" id="assistantChatShell" data-chat-state="idle" aria-label="Chat con el asistente">
+            <h1 class="assistant-chat-title font-display" id="assistantChatTitle">Andro asistente</h1>
+            <p class="font-mono" style="font-size:0.8rem;line-height:1.6">Asistente conectado a la API del proyecto. En modo real, los mensajes se procesan en el servidor y con el proveedor de IA configurado. Puede cometer errores; no compartas informacion sensible.</p>
 
             <div class="assistant-chat-messages" id="assistantChatMessages" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
 
             <p class="assistant-chat-status font-mono" id="assistantChatStatus" role="status" aria-live="polite" hidden></p>
 
             <form class="assistant-chat-form" id="assistantChatForm" novalidate>
-                <label class="sr-only" for="assistantChatInput">Escribe un mensaje de prueba</label>
+                <label class="sr-only" for="assistantChatInput">Escribe tu mensaje al asistente</label>
                 <textarea
                     id="assistantChatInput"
                     class="assistant-chat-input"
@@ -61,8 +65,8 @@
         </section>
     </main>
 
-    <script type="module" src="assets/js/static-nav.js?v=20261019-154130"></script>
-    <script type="module" src="assets/js/assistant.js?v=20261019-154130"></script>
+    <script type="module" src="assets/js/static-nav.js?v=20261019-160615"></script>
+    <script type="module" src="assets/js/assistant.js?v=20261019-160615"></script>
 </body>
 
 </html>

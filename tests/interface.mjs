@@ -65,7 +65,7 @@ async function main() {
         });
         const evaluate = async expression => {
             const result = await call('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true });
-            if (result.exceptionDetails) throw new Error(result.exceptionDetails.text);
+            if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
             return result.result.value;
         };
         await call('Page.enable');
@@ -74,14 +74,18 @@ async function main() {
         await call('Page.navigate', { url: base });
         await until(() => evaluate('!!document.querySelector(".menu-toggle[aria-controls]")'));
         assert.match(await evaluate('document.querySelector("h1").textContent'), /JUNIOR/);
-        assert.equal(await evaluate('document.querySelectorAll(".center-cover, #projectsSection, #projectModal, .social-links").length'), 0);
+        assert.equal(await evaluate('document.querySelectorAll(".center-cover, .profile-terminal, #projectModal, .social-links").length'), 0);
+        assert.equal(await evaluate('document.getElementById("centerColumn").innerHTML.trim()'), '');
+        assert.equal(await evaluate('document.querySelectorAll("#projectsSection .projects-list > *").length'), 0);
+        assert.equal(await evaluate('document.querySelectorAll(".main-nav [data-nav=work], #navPanel [data-nav=work]").length'), 2);
+        assert.equal(await evaluate('Array.from(document.querySelectorAll(".main-nav a, #navPanel a")).filter(a => a.getAttribute("href") === "asistente.html").length'), 2);
         assert.equal(await evaluate('document.querySelectorAll("img").length'), 0);
         for (const tech of ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'React', 'Tailwind CSS', 'Java', 'PHP', 'Spring Boot', 'Spring Security', 'APIs REST', 'PostgreSQL', 'MySQL']) {
             assert.ok(await evaluate(`document.querySelector('.hero-skill-grid').textContent.includes(${JSON.stringify(tech)})`), tech);
         }
-        await evaluate('document.querySelector(".main-nav [data-nav=about]").click()');
+        await evaluate('document.querySelector(".main-nav [data-nav=work]").click()');
         await wait(1800);
-        assert.ok(await evaluate('document.getElementById("aboutSection").classList.contains("active")'));
+        assert.ok(await evaluate('document.getElementById("projectsSection").classList.contains("active")'));
         await evaluate('document.querySelector(".main-nav [data-nav=contact]").click(); document.getElementById("contactForm").requestSubmit();');
         assert.ok(await evaluate('document.querySelectorAll("#contactForm [aria-invalid=true]").length > 0'));
         await evaluate(`var form=document.getElementById('contactForm'); form.elements.name.value='QA Demo'; form.elements.email.value='qa@example.com';
@@ -97,16 +101,19 @@ async function main() {
         assert.equal(await evaluate('document.getElementById("navPanel").getAttribute("aria-hidden")'), 'true');
 
         await call('Page.navigate', { url: `${base}/asistente.html` });
-        await until(() => evaluate('!!document.getElementById("assistantChatInput") && document.getElementById("assistantChatInput").placeholder.includes("prueba")'));
+        await until(() => evaluate('!!document.getElementById("assistantChatInput") && document.getElementById("assistantChatInput").placeholder.includes("asistente")'));
         await evaluate('document.getElementById("assistantChatInput").value="Caso ficticio para aprender"; document.getElementById("assistantChatForm").requestSubmit()');
-        await until(() => evaluate('document.getElementById("assistantChatMessages").textContent.includes("programador junior")'));
-        assert.equal(await evaluate('performance.getEntriesByType("resource").filter(r => r.name.includes("/api/")).length'), 0);
+        await until(() => evaluate('document.getElementById("assistantChatMessages").textContent.includes("Modo demostracion")'));
+        assert.equal(await evaluate('performance.getEntriesByType("resource").filter(r => r.name.includes("/api/chat.php")).length'), 1);
+        await evaluate(`window.fetch=async function(){return {ok:true,text:async function(){return JSON.stringify({reply:'Respuesta del proveedor simulado <img src=x>',source:'api-v2',suggestions:[]});}};};
+            document.getElementById('assistantChatInput').value='Otra consulta'; document.getElementById('assistantChatForm').requestSubmit();`);
+        await until(() => evaluate('document.getElementById("assistantChatMessages").textContent.includes("Respuesta del proveedor simulado")'));
         assert.equal(await evaluate('document.querySelectorAll("#assistantChatMessages img").length'), 0);
         assert.equal(await evaluate('localStorage.getItem("portfolio_chat_session_v1")'), null);
         assert.equal(await fs.stat(path.join(tmp, 'contacts.ndjson')).then(() => true, () => false), false);
         assert.equal(await fs.stat(path.join(tmp, 'quotes.ndjson')).then(() => true, () => false), false);
         assert.equal(runtimeErrors.length, 0);
-        console.log('OK: perfil junior, stack completo, sin foto/proyectos/redes, navegacion y menu movil, formulario y chat locales sin llamadas API.');
+        console.log('OK: perfil junior, hueco de foto vacio, Proyectos vacio con navegacion, redes eliminadas, formulario local y agente conectado a API (proveedor simulado).');
     } finally {
         socket?.close();
         await stop(chrome);

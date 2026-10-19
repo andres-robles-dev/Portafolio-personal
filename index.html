@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/main.css?v=20261019-154130" />
+    <link rel="stylesheet" href="assets/css/main.css?v=20261019-160615" />
 </head>
 
 <body>
@@ -19,7 +19,9 @@
             <a class="nav-link" data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
             <a class="nav-link" data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
             <a class="nav-link" data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
+            <a class="nav-link" data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
             <a class="nav-link" data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+            <a class="nav-link" data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
         </div>
         <div class="menu-toggle" aria-label="Abrir menú" role="button" tabindex="0">
             <div class="menu-line"></div><div class="menu-line"></div><div class="menu-line"></div>
@@ -30,7 +32,9 @@
         <a data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
         <a data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
         <a data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
+        <a data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
         <a data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
+        <a data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
     </div>
 
     <section class="hero-section" id="heroSection">
@@ -48,22 +52,7 @@
             </div>
         </div>
 
-        <div class="column hero-center stagger-in" id="centerColumn" role="button" tabindex="0" aria-label="Conocer mi perfil de programador junior">
-            <div class="profile-terminal font-mono">
-                <div class="profile-terminal-header"><span aria-hidden="true">● ● ●</span><span>perfil.js</span></div>
-                <div class="profile-terminal-symbol" aria-hidden="true">&lt;/&gt;</div>
-                <pre class="profile-terminal-code"><code><span>const</span> perfil = {
-    nombre: "Andrés Robles",
-    nivel: "Junior",
-    enfoque: [
-        "Frontend",
-        "Backend",
-        "Bases de datos"
-    ]
-};</code></pre>
-                <p class="profile-terminal-note">Aprender. Practicar. Mejorar.</p>
-            </div>
-        </div>
+        <div class="column hero-center stagger-in" id="centerColumn" aria-hidden="true"></div>
 
         <div class="column column-right">
             <div class="hero-panel-head stagger-in">
@@ -136,6 +125,16 @@
         </div>
     </section>
 
+    <section class="projects-section" id="projectsSection" aria-labelledby="projectsTitle">
+        <div class="projects-container">
+            <div class="section-header reveal reveal-projects reveal-grow">
+                <div class="section-label section-label-dark font-mono">PROYECTOS</div>
+                <h2 class="section-title" id="projectsTitle">Proyectos</h2>
+            </div>
+            <div class="projects-list"></div>
+        </div>
+    </section>
+
     <section class="contact-section" id="contactSection">
         <div class="contact-container">
             <div class="section-label font-mono reveal reveal-contact">FORMULARIO DE MUESTRA</div>
@@ -167,6 +166,6 @@
         </div>
     </section>
 
-    <script type="module" src="assets/js/main.js?v=20261019-154130"></script>
+    <script type="module" src="assets/js/main.js?v=20261019-160615"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 Este es un proyecto de aprendizaje. Las comprobaciones incluidas reducen riesgos conocidos, pero no equivalen a una auditoría de producción.
 
-La plantilla junior actual no llama al backend: el formulario solo valida y el chat responde con ejemplos locales. Los detalles siguientes describen el backend opcional que se conserva para estudiar, no funciones comerciales activas en la interfaz.
+El formulario de muestra solo valida localmente. El agente sí utiliza el backend: en modo real envía los mensajes al proveedor de IA configurado. Las pruebas utilizan un servidor aislado en modo demo y respuestas simuladas, no credenciales reales.
 
 ## Secretos y archivos privados
 
