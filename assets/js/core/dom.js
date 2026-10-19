@@ -1,7 +1,6 @@
 const heroSection = document.getElementById("heroSection");
 const aboutSection = document.getElementById("aboutSection");
 const experienceSection = document.getElementById("experienceSection");
-const projectsSection = document.getElementById("projectsSection");
 const contactSection = document.getElementById("contactSection");
 const footerSection = document.getElementById("footerSection");
 const centerColumn = document.getElementById("centerColumn");
@@ -21,7 +20,6 @@ export const elements = {
     heroSection,
     aboutSection,
     experienceSection,
-    projectsSection,
     contactSection,
     footerSection,
     centerColumn,

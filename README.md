@@ -1,92 +1,61 @@
-# Portafolio personal — práctica de programación
+# Andrés Robles — plantilla personal junior
 
-Web personal de **Andrés Robles**, desarrollada para practicar interfaces con HTML, CSS y JavaScript modular, y una API con PHP. Se presenta como proyecto de aprendizaje: no es un producto terminado ni una garantía de resultados comerciales.
+Plantilla de portafolio creada como **práctica de programación**. Presenta mi perfil de programador junior y las tecnologías con las que sigo aprendiendo, sin vender servicios ni mostrar trabajos o experiencia profesional inventados.
 
-## Qué incluye
+## Contenido
 
-- Portada, navegación, transiciones y secciones de proyectos.
-- Modales con información de cada proyecto.
-- Formulario de contacto con validación.
-- Asistente experimental con contexto de negocio, extracción de datos y confirmación antes de solicitar una cotización.
-- **Modo demo** para probar la interfaz sin IA externa, correos ni almacenamiento de contactos o conversaciones.
+- Portada sin fotografía, con una tarjeta visual de código.
+- Presentación personal y forma de aprender.
+- Mi stack de frontend, backend y bases de datos.
+- Formulario de muestra: valida en el navegador, **no envía ni guarda datos**.
+- Un pequeño ejercicio con canvas, Duck Runner.
+- Una interfaz de chat opcional en `asistente.html`, con respuestas locales de ejemplo, sin IA ni peticiones al servidor.
 
-**Tecnologías:** HTML, CSS, JavaScript ESM y PHP 8.1+. No hay framework, compilación, npm ni base de datos. Node.js 22+ se utiliza para la vista estática y las pruebas. El modo real de IA requiere PHP cURL.
+No incluye catálogo, sección de proyectos, redes sociales ni cotizaciones en la interfaz. Es una plantilla de estudio: no necesita que todos los componentes representen funcionalidades de un producto real.
 
-## Ejecutar en local
+## Mi stack
 
-Desde la carpeta del proyecto, en PowerShell:
+| Área | Tecnologías |
+|---|---|
+| Frontend | HTML, CSS, JavaScript, Bootstrap, React y Tailwind CSS |
+| Backend | Java, PHP, Spring Boot, Spring Security y APIs REST |
+| Bases de datos | SQL, PostgreSQL y MySQL |
+
+Este es mi stack personal, **no una lista de dependencias de esta plantilla**. La interfaz de este repositorio está hecha con HTML, CSS y JavaScript ESM, sin framework ni compilación. El ejemplo PHP de la práctica anterior se conserva aparte, pero no está conectado al formulario ni al chat de muestra.
+
+## Ver en local
+
+Con Node.js 22 o superior, desde la carpeta del proyecto:
+
+```bash
+node local-server.mjs
+```
+
+Abre **http://127.0.0.1:4173**. No necesitas configurar claves, correo o base de datos. Detén el servidor con **Ctrl+C**. No abras `index.html` mediante `file://`, porque utiliza módulos JavaScript.
+
+Si prefieres PHP 8.1 o superior:
 
 ```powershell
 $env:APP_MODE = 'demo'
 php -S 127.0.0.1:8081 -t . router.php
 ```
 
-Abre **http://127.0.0.1:8081**. El asistente está en `/asistente.html`. Detén el servidor con **Ctrl+C**. Puedes elegir otro puerto si está ocupado.
+Abre **http://127.0.0.1:8081**. Usa siempre el router incluido: el servidor integrado de PHP no aplica `.htaccess`.
 
-En Linux/macOS:
+## Organización y pruebas
 
-```bash
-APP_MODE=demo php -S 127.0.0.1:8081 -t . router.php
-```
-
-Usa siempre `router.php`: el servidor integrado de PHP **no aplica `.htaccess`**. Este router bloquea secretos, Git, registros y código interno. Se incluye también un servidor estático protegido:
-
-```bash
-node local-server.mjs
-```
-
-Abre `http://127.0.0.1:4173`. Esta alternativa sirve **solo el frontend**: no ejecuta PHP ni el asistente/contacto de la API. No abras directamente `index.html` con `file://`, porque utiliza módulos JavaScript.
-
-## Configuración opcional del modo real
-
-No hace falta una clave para explorar el proyecto en modo demo. Para activar la integración real:
-
-1. Si todavía no existe `api/.env`, crea una copia de `api/.env.example`. **No sobrescribas una configuración existente.**
-2. Configura `APP_MODE=live`, el proveedor/modelo y su clave exclusivamente en el entorno del servidor o en ese archivo privado.
-3. Configura almacenamiento privado, límites y, solo si lo necesitas, destinatarios de correo.
-4. Reinicia PHP y utiliza únicamente datos ficticios para pruebas.
-
-La plantilla empieza en `demo`. Por compatibilidad, una instalación existente sin `APP_MODE` conserva `live`; la variable del proceso tiene prioridad sobre el archivo. Si estableciste `APP_MODE` en PowerShell, recuerda retirarla al terminar con `Remove-Item Env:APP_MODE`.
-
-Nunca publiques `api/.env`, contactos, conversaciones, cotizaciones ni copias de esos archivos. Más información en [la documentación de la API](api/README.md) y [seguridad](SECURITY.md).
-
-## Organización
-
-```text
-index.html / asistente.html    Páginas
-assets/css/                   Estilos
-assets/js/core/               Estado y configuración pública
-assets/js/modules/            Interfaz e interacciones
-assets/js/services/           Acceso a la API
-api/                          Endpoints PHP y configuración privada
-api/assistant-v2/             Motor activo del asistente
-api/knowledge/motor.json       Única fuente de reglas de negocio
-storage/                      Datos locales, bloqueados por HTTP e ignorados por Git
-router.php                    Router seguro de desarrollo
-scripts/                      Validación, mantenimiento y versionado
-tests/                        Pruebas con datos ficticios y almacenamiento temporal
-```
-
-## Comprobaciones
+`index.html` contiene la plantilla, `assets/css/` sus estilos y `assets/js/` la navegación, validación e interacciones. `api/` conserva un backend PHP de ejemplo independiente, documentado en [api/README.md](api/README.md). No es necesario activarlo para utilizar la plantilla.
 
 ```bash
 node --test tests/*.test.mjs
 php tests/security.php
+node tests/interface.mjs
 node scripts/block-hardcode.mjs --history
 node scripts/release-version.mjs verify
 ```
 
-Las pruebas aíslan la configuración real con `APP_LOAD_ENV=0`, utilizan proveedores simulados y no envían correos ni consumen una clave real. Comprueban rutas privadas, validación, sesiones, límites concurrentes, almacenamiento aislado y servicios del frontend. La comprobación visual se puede repetir con `node tests/interface.mjs` si tienes Chrome/Chromium instalado; admite `CHROME_PATH`.
+La prueba visual necesita Chrome/Chromium; admite `CHROME_PATH`. Las pruebas del backend usan configuración y almacenamiento aislados, sin credenciales reales ni correos. Consulta [SECURITY.md](SECURITY.md) si deseas estudiar o activar ese código por separado.
 
-## Lo que practiqué
+## Alcance
 
-JavaScript organizado por módulos, manipulación segura del DOM, diseño adaptable, peticiones asíncronas, validación en cliente y servidor, gestión de estado, cookies de sesión, integración con APIs y separación de configuración privada.
-
-## Limitaciones y mejoras pendientes
-
-- El asistente y su filtro de políticas son experimentales: pueden equivocarse. No se promete eliminar alucinaciones ni ofrecer seguridad de producción.
-- El modo demo no genera respuestas reales de IA ni envía solicitudes.
-- Los recursos de Google Fonts necesitan conexión; no es una PWA offline.
-- Una demo pública con IA real necesita controles adicionales de acceso, cuotas del proveedor y una política de privacidad/retención adecuada.
-- Quedan por ampliar las pruebas de accesibilidad, dispositivos y entrega real de correo.
-- Antes de hacer público el repositorio, revisar derechos de imágenes y recursos y decidir la licencia. Esta revisión no añade una licencia ni cambia su visibilidad.
+El objetivo es practicar estructura, diseño adaptable, DOM, módulos, formularios y organización del código, no presentar una empresa ni un producto comercial. Los recursos de Google Fonts necesitan conexión. La licencia de distribución queda pendiente de elección del autor; el repositorio no cambia de visibilidad automáticamente.

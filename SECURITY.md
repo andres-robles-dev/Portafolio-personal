@@ -2,6 +2,8 @@
 
 Este es un proyecto de aprendizaje. Las comprobaciones incluidas reducen riesgos conocidos, pero no equivalen a una auditoría de producción.
 
+La plantilla junior actual no llama al backend: el formulario solo valida y el chat responde con ejemplos locales. Los detalles siguientes describen el backend opcional que se conserva para estudiar, no funciones comerciales activas en la interfaz.
+
 ## Secretos y archivos privados
 
 - Las claves solo van en el entorno del servidor o en `api/.env`, nunca en JavaScript, documentación, incidencias o capturas.

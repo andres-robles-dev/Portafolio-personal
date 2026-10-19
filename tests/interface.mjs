@@ -73,21 +73,22 @@ async function main() {
         await call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
         await call('Page.navigate', { url: base });
         await until(() => evaluate('!!document.querySelector(".menu-toggle[aria-controls]")'));
-        assert.match(await evaluate('document.querySelector("h1").textContent'), /WEBS/);
-        await evaluate('document.querySelector(".main-nav [data-nav=work]").click()');
+        assert.match(await evaluate('document.querySelector("h1").textContent'), /JUNIOR/);
+        assert.equal(await evaluate('document.querySelectorAll(".center-cover, #projectsSection, #projectModal, .social-links").length'), 0);
+        assert.equal(await evaluate('document.querySelectorAll("img").length'), 0);
+        for (const tech of ['HTML', 'CSS', 'JavaScript', 'Bootstrap', 'React', 'Tailwind CSS', 'Java', 'PHP', 'Spring Boot', 'Spring Security', 'APIs REST', 'PostgreSQL', 'MySQL']) {
+            assert.ok(await evaluate(`document.querySelector('.hero-skill-grid').textContent.includes(${JSON.stringify(tech)})`), tech);
+        }
+        await evaluate('document.querySelector(".main-nav [data-nav=about]").click()');
         await wait(1800);
-        await evaluate('document.querySelector(".project-item-link[data-project-slug]").click()');
-        assert.equal(await evaluate('document.getElementById("projectModal").getAttribute("aria-hidden")'), 'false');
-        assert.ok(await evaluate('document.getElementById("projectModalTitle").textContent.length > 0'));
-        await evaluate('document.dispatchEvent(new KeyboardEvent("keydown", {key:"Escape",bubbles:true}))');
-        assert.equal(await evaluate('document.getElementById("projectModal").getAttribute("aria-hidden")'), 'true');
+        assert.ok(await evaluate('document.getElementById("aboutSection").classList.contains("active")'));
         await evaluate('document.querySelector(".main-nav [data-nav=contact]").click(); document.getElementById("contactForm").requestSubmit();');
         assert.ok(await evaluate('document.querySelectorAll("#contactForm [aria-invalid=true]").length > 0'));
         await evaluate(`var form=document.getElementById('contactForm'); form.elements.name.value='QA Demo'; form.elements.email.value='qa@example.com';
-            form.elements.inquiryType.value='producto'; form.elements.message.value='Ejemplo ficticio para comprobar una web de practica.';
-            form.elements.formStartedAt.value=String(Date.now()-8000); form.requestSubmit();`);
+            form.elements.inquiryType.value='aprendizaje'; form.elements.message.value='Ejemplo ficticio para comprobar una web de practica.'; form.requestSubmit();`);
         await until(() => evaluate('document.getElementById("contactFeedback").textContent.includes("Demostracion completada")'));
         assert.equal(await evaluate('localStorage.getItem("portfolio_contact_queue_v1")'), null);
+        assert.equal(await evaluate('performance.getEntriesByType("resource").filter(r => r.name.includes("/api/")).length'), 0);
 
         await call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
         await evaluate('document.querySelector(".menu-toggle").click()');
@@ -96,18 +97,16 @@ async function main() {
         assert.equal(await evaluate('document.getElementById("navPanel").getAttribute("aria-hidden")'), 'true');
 
         await call('Page.navigate', { url: `${base}/asistente.html` });
-        await until(() => evaluate('!!document.getElementById("assistantChatInput") && document.getElementById("assistantChatInput").placeholder.includes("Cuentame")'));
+        await until(() => evaluate('!!document.getElementById("assistantChatInput") && document.getElementById("assistantChatInput").placeholder.includes("prueba")'));
         await evaluate('document.getElementById("assistantChatInput").value="Caso ficticio para aprender"; document.getElementById("assistantChatForm").requestSubmit()');
-        await until(() => evaluate('document.getElementById("assistantChatMessages").textContent.includes("Modo demostracion")'));
-        await evaluate(`window.fetch=async function(){return {ok:true,text:async function(){return JSON.stringify({reply:'<img src=x onerror=alert(1)> Respuesta simulada',source:'api-v2',quoteSendResult:'queued',suggestions:[]});}};};
-            document.getElementById('assistantChatInput').value='Simular fallo de correo'; document.getElementById('assistantChatForm').requestSubmit();`);
-        await until(() => evaluate('document.getElementById("assistantChatStatus").textContent.includes("guardada para seguimiento")'));
+        await until(() => evaluate('document.getElementById("assistantChatMessages").textContent.includes("programador junior")'));
+        assert.equal(await evaluate('performance.getEntriesByType("resource").filter(r => r.name.includes("/api/")).length'), 0);
         assert.equal(await evaluate('document.querySelectorAll("#assistantChatMessages img").length'), 0);
         assert.equal(await evaluate('localStorage.getItem("portfolio_chat_session_v1")'), null);
         assert.equal(await fs.stat(path.join(tmp, 'contacts.ndjson')).then(() => true, () => false), false);
         assert.equal(await fs.stat(path.join(tmp, 'quotes.ndjson')).then(() => true, () => false), false);
         assert.equal(runtimeErrors.length, 0);
-        console.log('OK: portada, navegacion, modal, formulario demo, menu movil, asistente y fallback de correo simulado; sin datos ni correos reales.');
+        console.log('OK: perfil junior, stack completo, sin foto/proyectos/redes, navegacion y menu movil, formulario y chat locales sin llamadas API.');
     } finally {
         socket?.close();
         await stop(chrome);

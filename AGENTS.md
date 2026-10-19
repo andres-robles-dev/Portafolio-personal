@@ -2,7 +2,8 @@
 
 ## Objetivo
 - Guia operativa para agentes de codigo en este repositorio.
-- Prioridad: estabilidad del asistente comercial, conversion de leads y seguridad.
+- Prioridad: plantilla personal de programador junior, contenido honesto y seguridad.
+- La interfaz no es comercial: sin retrato, redes sociales, catalogo ni proyectos inventados. Formulario y chat visibles son demostraciones locales sin peticiones API.
 - Hacer cambios pequenos, trazables y compatibles con el contrato actual.
 
 ## Stack y alcance
@@ -139,7 +140,7 @@
   - degradacion sin romper UX
   - feedback claro al usuario
 
-## Reglas comerciales del asistente
+## Reglas del backend de ejemplo opcional (no conectado a la plantilla)
 - Responder en espanol, tono profesional y directo.
 - No prometer resultados garantizados.
 - No dar precios cerrados en chat.

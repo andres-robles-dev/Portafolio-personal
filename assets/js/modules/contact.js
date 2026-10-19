@@ -164,6 +164,11 @@ export function initContact({
             return;
         }
 
+        if (contactForm.dataset.templateDemo === 'true') {
+            setFeedback(contactFeedback, 'success', 'Demostracion completada: validacion correcta. No se ha enviado ni guardado ningun dato.');
+            return;
+        }
+
         setLoading(true);
         setFeedback(contactFeedback, "", "");
 

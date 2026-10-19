@@ -4,118 +4,103 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andres Robles | Webs, Sistemas y APIs para Negocio</title>
+    <meta name="description" content="Plantilla personal de Andrés Robles, programador junior. Mi stack y mi aprendizaje en frontend, backend y bases de datos." />
+    <title>Andrés Robles | Programador junior</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/main.css?v=20261019-124854" />
+    <link rel="stylesheet" href="assets/css/main.css?v=20261019-154130" />
 </head>
 
 <body>
     <nav class="main-nav">
-        <div class="logo">ANDRES ROBLES</div>
-
+        <div class="logo">ANDRÉS ROBLES</div>
         <div class="nav-links font-mono">
             <a class="nav-link" data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
-            <a class="nav-link" data-nav="about" data-nav-key="about" href="index.html?go=about">ENFOQUE</a>
-            <a class="nav-link" data-nav="method" data-nav-key="method" href="index.html?go=method">MÉTODO</a>
-            <a class="nav-link" data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
+            <a class="nav-link" data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
+            <a class="nav-link" data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
             <a class="nav-link" data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
-            <a class="nav-link" data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
         </div>
-
         <div class="menu-toggle" aria-label="Abrir menú" role="button" tabindex="0">
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
-            <div class="menu-line"></div>
+            <div class="menu-line"></div><div class="menu-line"></div><div class="menu-line"></div>
         </div>
     </nav>
 
     <div class="nav-panel font-mono" id="navPanel" aria-hidden="true">
         <a data-nav="home" data-nav-key="home" href="index.html">INICIO</a>
-        <a data-nav="about" data-nav-key="about" href="index.html?go=about">ENFOQUE</a>
-        <a data-nav="method" data-nav-key="method" href="index.html?go=method">MÉTODO</a>
-        <a data-nav="work" data-nav-key="work" href="index.html?go=work">PROYECTOS</a>
+        <a data-nav="about" data-nav-key="about" href="index.html?go=about">SOBRE MÍ</a>
+        <a data-nav="method" data-nav-key="method" href="index.html?go=method">APRENDIZAJE</a>
         <a data-nav="contact" data-nav-key="contact" href="index.html?go=contact">CONTACTO</a>
-        <a data-nav-key="assistant" href="asistente.html">ASISTENTE</a>
     </div>
 
     <section class="hero-section" id="heroSection">
         <div class="column hero-intro">
             <div class="hero-intro-main stagger-in">
-                <h1 class="hero-title">WEBS<br>SISTEMAS<br>Y APIS</h1>
-                <p class="hero-subtitle">
-                    Te ayudo a crear soluciones web para negocio: desde paginas para captar clientes,
-                    hasta sistemas internos y APIs sencillas, con diseno claro y una experiencia facil de usar.
-                </p>
-
+                <h1 class="hero-title">DEV<br>JUNIOR</h1>
+                <p class="hero-subtitle">Soy Andrés Robles, programador junior. Aprendo creando interfaces, trabajando con datos y entendiendo cómo conectar el frontend con el backend.</p>
                 <div class="hero-actions font-mono">
-                    <a class="hero-action hero-action-primary" href="index.html?go=work">Ver soluciones</a>
-                    <a class="hero-action hero-action-secondary" href="asistente.html">Hablar con asistente</a>
+                    <a class="hero-action hero-action-primary" href="index.html?go=about">Conocer mi perfil</a>
+                    <a class="hero-action hero-action-secondary" href="index.html?go=method">Cómo aprendo</a>
                 </div>
             </div>
-
             <div class="hero-intro-foot stagger-in">
-                <p class="hero-note font-mono">Trabajo con clientes y tambien colaboro con equipos en proyectos reales</p>
+                <p class="hero-note font-mono">/ plantilla personal · práctica de programación</p>
             </div>
         </div>
 
-        <div class="column hero-center stagger-in" id="centerColumn" role="button" tabindex="0" aria-label="Ir a la seccion de enfoque">
-            <img class="center-cover" src="./img/f6bb6f77c2fecaa5fe5e945b4db402d2.jpg" alt="Retrato profesional de Andres Robles" loading="eager" />
+        <div class="column hero-center stagger-in" id="centerColumn" role="button" tabindex="0" aria-label="Conocer mi perfil de programador junior">
+            <div class="profile-terminal font-mono">
+                <div class="profile-terminal-header"><span aria-hidden="true">● ● ●</span><span>perfil.js</span></div>
+                <div class="profile-terminal-symbol" aria-hidden="true">&lt;/&gt;</div>
+                <pre class="profile-terminal-code"><code><span>const</span> perfil = {
+    nombre: "Andrés Robles",
+    nivel: "Junior",
+    enfoque: [
+        "Frontend",
+        "Backend",
+        "Bases de datos"
+    ]
+};</code></pre>
+                <p class="profile-terminal-note">Aprender. Practicar. Mejorar.</p>
+            </div>
         </div>
 
         <div class="column column-right">
             <div class="hero-panel-head stagger-in">
-                <p class="hero-panel-kicker font-mono">Stack / Enfoque</p>
-                <h2 class="hero-panel-title">Diseno simple, desarrollo limpio y enfoque practico</h2>
+                <p class="hero-panel-kicker font-mono">Mi stack</p>
+                <h2 class="hero-panel-title">Las tecnologías con las que practico</h2>
             </div>
-
             <div class="hero-panel-meta font-mono stagger-in">
-                <p>/ programador web frontend + backend</p>
-                <p>/ enfoque en UX simple e intuitiva</p>
-                <p>/ soluciones listas para crecer sin complicar</p>
+                <p>/ desarrollo frontend y backend</p>
+                <p>/ Java, Spring Boot y APIs REST</p>
+                <p>/ aprendizaje continuo, paso a paso</p>
             </div>
-
             <div class="hero-skill-grid stagger-in">
                 <article class="hero-skill-col">
                     <h3 class="hero-skill-title">Frontend</h3>
                     <ul class="hero-skill-list font-mono">
-                        <li>HTML</li>
-                        <li>CSS</li>
-                        <li>JavaScript</li>
-                        <li>React</li>
-                        <li>Tailwind</li>
-                        <li>Bootstrap</li>
+                        <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Bootstrap</li><li>React</li><li>Tailwind CSS</li>
                     </ul>
                 </article>
-
                 <article class="hero-skill-col">
                     <h3 class="hero-skill-title">Backend</h3>
                     <ul class="hero-skill-list font-mono">
-                        <li>Node.js</li>
-                        <li>PHP</li>
-                        <li>APIs REST</li>
-                        <li>MySQL</li>
+                        <li>Java</li><li>PHP</li><li>Spring Boot</li><li>Spring Security</li><li>APIs REST</li>
                     </ul>
                 </article>
-
                 <article class="hero-skill-col">
-                    <h3 class="hero-skill-title">Enfoque</h3>
+                    <h3 class="hero-skill-title">Datos</h3>
                     <ul class="hero-skill-list font-mono">
-                        <li>Diseno funcional</li>
-                        <li>Simplicidad e intuitividad</li>
-                        <li>Flujos de trabajo claros</li>
-                        <li>Ejecucion por fases</li>
+                        <li>SQL</li><li>PostgreSQL</li><li>MySQL</li>
                     </ul>
                 </article>
             </div>
-
             <div class="column-3-bottom stagger-in">
                 <p class="hero-availability">
-                    <strong class="font-display">web + sistemas + apis</strong>
-                    <span class="hero-availability-note">construidos para convertir, operar y escalar</span>
+                    <strong class="font-display">En constante aprendizaje</strong>
+                    <span class="hero-availability-note">Construyendo una base sólida como desarrollador</span>
                 </p>
-                <button class="contact-btn font-mono">Pedir propuesta</button>
+                <button class="contact-btn font-mono">Ver formulario de muestra</button>
             </div>
         </div>
     </section>
@@ -125,307 +110,63 @@
             <div class="about-layout">
                 <div class="about-side">
                     <p class="reveal reveal-about">
-                        Soy programador web y me gusta unir diseno con desarrollo para crear soluciones claras.
-                        Construyo paginas web, sistemas internos y APIs sencillas que realmente te ayuden
-                        a vender mejor, organizar tu operacion o avanzar mas rapido.
+                        Soy Andrés Robles, programador junior. Me interesa comprender cómo se construye una aplicación, desde lo que se ve en el navegador hasta la lógica del servidor y sus datos.
                         <br><br>
-                        Mi objetivo es que cada proyecto sea facil de entender, usar y mantener.
-                        Cuido estructura, contenido y flujo para que tu web o sistema no solo se vea bien,
-                        sino que tambien funcione bien en el dia a dia.
+                        Practico con HTML, CSS y JavaScript, y también con React, Bootstrap y Tailwind CSS. En backend trabajo mi base con Java, PHP, Spring Boot, Spring Security y APIs REST, junto con PostgreSQL y MySQL.
                         <br><br>
-                        Trabajo con clientes que quieren ejecutar rapido y con equipos que necesitan apoyo tecnico.
-                        Podemos arrancar con un producto definido o hacerlo a medida, segun lo que necesites.
+                        Esta web es una plantilla de estudio para practicar diseño, estructura y organización del código. No representa una empresa, un catálogo de productos ni una lista de trabajos para clientes.
                     </p>
-
-                    <div class="about-meta font-mono reveal reveal-about">
-                        <span>Perfil</span>
-                        <span>Freelance + colaboracion con equipos</span>
-                    </div>
+                    <div class="about-meta font-mono"><span>Perfil</span><span>Programador junior · en formación continua</span></div>
                 </div>
-
-                <div>
-                    <h2 class="about-big reveal reveal-about">
-                        Proyectos reales, soluciones digitales y desarrollo a medida.                    </h2>
-                </div>
+                <div><h2 class="about-big reveal reveal-about">Aprender construyendo, entender el código y seguir mejorando.</h2></div>
             </div>
         </div>
     </section>
 
     <section class="experience-section" id="experienceSection">
         <div class="experience-container">
-            <div class="section-label font-mono reveal reveal-exp">ENFOQUE</div>
-            
+            <div class="section-label font-mono reveal reveal-exp">CÓMO APRENDO</div>
             <div class="focus-grid">
-                <div class="focus-item reveal reveal-exp">
-                    <span class="focus-num font-mono">01</span>
-                    <h3 class="focus-title">Diseno que funciona</h3>
-                    <p class="focus-desc">Priorizo claridad sobre complejidad. Cada elemento tiene que tener una razon de existir.</p>
-                </div>
-
-                <div class="focus-item reveal reveal-exp">
-                    <span class="focus-num font-mono">02</span>
-                    <h3 class="focus-title">Codigo mantenible</h3>
-                    <p class="focus-desc">Escribo codigo limpio y organizado para que cualquier desarrollador pueda entenderlo y evolucionarlo.</p>
-                </div>
-
-                <div class="focus-item reveal reveal-exp">
-                    <span class="focus-num font-mono">03</span>
-                    <h3 class="focus-title">Enfoque pragmatico</h3>
-                    <p class="focus-desc">No reinvento la rueda. Uso herramientas probadas y resuelvo problemas reales con soluciones simples.</p>
-                </div>
-
-                <div class="focus-item reveal reveal-exp">
-                    <span class="focus-num font-mono">04</span>
-                    <h3 class="focus-title">Resultados medibles</h3>
-                    <p class="focus-desc">Cada proyecto tiene metricas claras: conversion, rendimiento o engagement segun el objetivo.</p>
-                </div>
+                <div class="focus-item reveal reveal-exp"><span class="focus-num font-mono">01</span><h3 class="focus-title">Bases primero</h3><p class="focus-desc">Refuerzo HTML, CSS, JavaScript y Java para entender qué hace el código antes de apoyarme en una herramienta.</p></div>
+                <div class="focus-item reveal reveal-exp"><span class="focus-num font-mono">02</span><h3 class="focus-title">Práctica constante</h3><p class="focus-desc">Hago ejercicios de interfaces, componentes y formularios con React, Bootstrap y Tailwind CSS.</p></div>
+                <div class="focus-item reveal reveal-exp"><span class="focus-num font-mono">03</span><h3 class="focus-title">Conectar las piezas</h3><p class="focus-desc">Practico APIs REST, Spring Boot, Spring Security y PHP para relacionar la interfaz con la lógica y las bases de datos.</p></div>
+                <div class="focus-item reveal reveal-exp"><span class="focus-num font-mono">04</span><h3 class="focus-title">Revisar y mejorar</h3><p class="focus-desc">Leo documentación, reviso errores y reorganizo lo que aprendo. No busco aparentar experiencia que todavía estoy construyendo.</p></div>
             </div>
-
-            <div class="focus-cta reveal reveal-exp">
-                <a href="#projectsSection" class="focus-link font-mono">Ver trabajos reales</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="projects-section" id="projectsSection">
-        <div class="projects-container">
-            <div class="section-header reveal reveal-projects reveal-grow">
-                <div class="section-label section-label-dark font-mono">PROYECTOS Y SOLUCIONES</div>
-                <h2 class="section-title">Soluciones web<br>para negocio</h2>
-            </div>
-
-            <div class="projects-list">
-                <a class="project-item project-item-link reveal reveal-projects" data-project-slug="landing-b2b" href="#" aria-label="Ver detalle de Landing de captacion B2B">
-                    <div class="project-visual">
-                        <img class="project-thumb" src="./img/Proyecto nuevo (7).png" alt="Vista de dashboard para captacion B2B" loading="lazy" />
-                        <div class="project-number font-mono">01</div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Landing de captacion B2B</h3>
-                        <p>
-                            Pagina enfocada en convertir visitas en oportunidades comerciales,
-                            con mensaje claro, estructura de conversion y formulario orientado a leads.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag font-mono">Leads</span>
-                            <span class="project-tag font-mono">Conversion</span>
-                            <span class="project-tag font-mono">B2B</span>
-                        </div>
-                    </div>
-                    <div class="project-arrow">→</div>
-                </a>
-
-                <a class="project-item project-item-link reveal reveal-projects" data-project-slug="corporate-sales-site" href="#" aria-label="Ver detalle de Web corporativa multipagina">
-                    <div class="project-visual">
-                        <img class="project-thumb" src="./img/Proyecto nuevo (7).png" alt="Preview de web corporativa enfocada en ventas" loading="lazy" />
-                        <div class="project-number font-mono">02</div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Web corporativa multipagina</h3>
-                        <p>
-                            Sitio para presentar tu marca, servicios y casos con claridad,
-                            reforzando confianza y facilitando el paso a contacto comercial.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag font-mono">Marca</span>
-                            <span class="project-tag font-mono">Ventas</span>
-                            <span class="project-tag font-mono">Credibilidad</span>
-                        </div>
-                    </div>
-                    <div class="project-arrow">→</div>
-                </a>
-
-                <a class="project-item project-item-link reveal reveal-projects" data-project-slug="internal-ops-panel" href="#" aria-label="Ver detalle de Sistema interno de flujos de trabajo">
-                    <div class="project-visual">
-                        <img class="project-thumb" src="./img/Proyecto nuevo (7).png" alt="Panel interno de operaciones para equipos" loading="lazy" />
-                        <div class="project-number font-mono">03</div>
-                    </div>
-                    <div class="project-info">
-                        <h3>Sistema interno de flujos de trabajo</h3>
-                        <p>
-                            Aplicacion para organizar procesos del equipo, centralizar tareas y datos,
-                            y reducir trabajo manual con una operacion mas clara.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag font-mono">Operaciones</span>
-                            <span class="project-tag font-mono">Flujos</span>
-                            <span class="project-tag font-mono">MySQL</span>
-                        </div>
-                    </div>
-                    <div class="project-arrow">→</div>
-                </a>
-
-                <a class="project-item project-item-link reveal reveal-projects" data-project-slug="simple-business-api" href="#" aria-label="Ver detalle de API sencilla para integraciones">
-                    <div class="project-visual">
-                        <img class="project-thumb" src="./img/Proyecto nuevo (7).png" alt="Integracion backend con endpoints de API" loading="lazy" />
-                        <div class="project-number font-mono">04</div>
-                    </div>
-                    <div class="project-info">
-                        <h3>API sencilla para integraciones</h3>
-                        <p>
-                            API REST para conectar formularios, CRM, paneles o servicios externos,
-                            con endpoints claros y estructura preparada para crecer por fases.
-                        </p>
-                        <div class="project-tags">
-                            <span class="project-tag font-mono">API</span>
-                            <span class="project-tag font-mono">Integraciones</span>
-                            <span class="project-tag font-mono">Backend</span>
-                        </div>
-                    </div>
-                    <div class="project-arrow">→</div>
-                </a>
-            </div>
+            <div class="focus-cta reveal reveal-exp"><p class="focus-link font-mono">Una plantilla sencilla para seguir practicando.</p></div>
         </div>
     </section>
 
     <section class="contact-section" id="contactSection">
         <div class="contact-container">
-            <div class="section-label font-mono reveal reveal-contact">CONTACTO</div>
-            <h2 class="contact-title reveal reveal-contact reveal-grow">
-                Hablemos de tu proyecto
-            </h2>
-            <p class="contact-subtitle reveal reveal-contact">
-                Si necesitas una web, un sistema o una API, te ayudo a definir el siguiente paso.
-            </p>
-            <div class="contact-actions reveal reveal-contact">
-                <button type="button" class="contact-action-main font-mono" data-contact-intent="producto">
-                    Iniciar proyecto
-                </button>
-                <button type="button" class="contact-action-secondary font-mono" data-contact-intent="equipo">
-                    Colaborar con equipo
-                </button>
-            </div>
-
-            <form class="contact-form reveal reveal-contact" id="contactForm" novalidate>
-                <input type="hidden" name="source" value="portfolio-web" />
-                <input type="hidden" name="formStartedAt" id="contactFormStartedAt" value="" />
-
-                <label class="contact-honeypot" for="contactWebsite" aria-hidden="true">
-                    <span>Sitio web</span>
-                    <input id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off" />
-                </label>
-
+            <div class="section-label font-mono reveal reveal-contact">FORMULARIO DE MUESTRA</div>
+            <h2 class="contact-title reveal reveal-contact reveal-grow">Un espacio para practicar</h2>
+            <p class="contact-subtitle reveal reveal-contact">Este formulario es parte de la plantilla. Permite probar la validación en el navegador; no envía mensajes, guarda datos ni solicita presupuestos.</p>
+            <form class="contact-form reveal reveal-contact" id="contactForm" data-template-demo="true" novalidate autocomplete="off">
                 <div class="contact-form-grid">
-                    <label class="contact-field" for="contactName">
-                        <span>Nombre</span>
-                        <input id="contactName" name="name" type="text" autocomplete="name" required />
-                        <small class="contact-field-error" data-error-for="name"></small>
-                    </label>
-
-                    <label class="contact-field" for="contactEmail">
-                        <span>Email</span>
-                        <input id="contactEmail" name="email" type="email" autocomplete="email" required />
-                        <small class="contact-field-error" data-error-for="email"></small>
-                    </label>
-
-                    <label class="contact-field" for="contactCompany">
-                        <span>Empresa (opcional)</span>
-                        <input id="contactCompany" name="company" type="text" autocomplete="organization" />
-                        <small class="contact-field-error" data-error-for="company"></small>
-                    </label>
-
-                    <label class="contact-field" for="contactType">
-                        <span>Tipo de solicitud</span>
-                        <select id="contactType" name="inquiryType" required>
-                            <option value="">Selecciona una opción</option>
-                            <option value="producto">Quiero una web o sistema</option>
-                            <option value="medida">Proyecto a medida</option>
-                            <option value="equipo">Colaboracion con equipo o empresa</option>
-                        </select>
-                        <small class="contact-field-error" data-error-for="inquiryType"></small>
-                    </label>
+                    <label class="contact-field" for="contactName"><span>Nombre de ejemplo</span><input id="contactName" name="name" type="text" required /><small class="contact-field-error" data-error-for="name"></small></label>
+                    <label class="contact-field" for="contactEmail"><span>Email de ejemplo</span><input id="contactEmail" name="email" type="email" placeholder="nombre@example.com" required /><small class="contact-field-error" data-error-for="email"></small></label>
+                    <label class="contact-field" for="contactType"><span>Tema</span><select id="contactType" name="inquiryType" required><option value="">Selecciona una opción</option><option value="aprendizaje">Aprendizaje</option><option value="colaboracion">Colaboración</option><option value="otro">Otro tema</option></select><small class="contact-field-error" data-error-for="inquiryType"></small></label>
                 </div>
-
-                <label class="contact-field contact-field-full" for="contactMessage">
-                    <span>Cuéntame qué necesitas</span>
-                    <textarea id="contactMessage" name="message" rows="5" required></textarea>
-                    <small class="contact-field-error" data-error-for="message"></small>
-                </label>
-
-                <button type="submit" class="contact-submit font-mono" id="contactSubmitButton">Enviar solicitud</button>
+                <label class="contact-field contact-field-full" for="contactMessage"><span>Mensaje de ejemplo</span><textarea id="contactMessage" name="message" rows="5" required></textarea><small class="contact-field-error" data-error-for="message"></small></label>
+                <button type="submit" class="contact-submit font-mono" id="contactSubmitButton">Probar formulario</button>
                 <p class="contact-feedback" id="contactFeedback" role="status" aria-live="polite"></p>
-                <p class="font-mono" style="font-size:0.8rem;line-height:1.6">Proyecto de aprendizaje: utiliza datos ficticios al probarlo. En modo real, el servidor guarda la solicitud para seguimiento. No se guardan borradores nuevos en tu navegador.</p>
             </form>
-
-            <div class="social-links reveal reveal-contact">
-                <a href="https://github.com/andres-robles-dev" class="social-link font-mono">GitHub</a>
-                <span class="social-link font-mono" aria-disabled="true" title="Sin configurar en esta muestra">LinkedIn · pendiente</span>
-                <span class="social-link font-mono" aria-disabled="true" title="Sin configurar en esta muestra">Twitter · pendiente</span>
-                <span class="social-link font-mono" aria-disabled="true" title="Sin configurar en esta muestra">Dribbble · pendiente</span>
-            </div>
         </div>
     </section>
 
-    <footer class="footer" id="footerSection">
-        <p class="font-mono">© 2026 Andres Robles. Webs, sistemas y APIs para negocio.</p>
-    </footer>
+    <footer class="footer" id="footerSection"><p class="font-mono">© 2026 Andrés Robles · Programador junior · Plantilla de aprendizaje</p></footer>
 
     <section class="duck-runner-section" id="duckRunnerSection" aria-labelledby="duckRunnerTitle">
         <div class="duck-runner-container">
-            <header class="duck-runner-head">
-                <p class="duck-runner-kicker font-mono">/ mini game</p>
-                <h2 class="duck-runner-title" id="duckRunnerTitle">Duck Runner</h2>
-                <p class="duck-runner-copy">Recreacion funcional del runner sin conexion. Salta con SPACE/UP o TAP y agachate con DOWN.</p>
-            </header>
-
-            <div class="duck-runner-stage" id="duckRunnerStage" role="region" aria-label="Duck Runner en pixeles">
+            <header class="duck-runner-head"><p class="duck-runner-kicker font-mono">/ práctica con JavaScript</p><h2 class="duck-runner-title" id="duckRunnerTitle">Duck Runner</h2><p class="duck-runner-copy">Un pequeño ejercicio con canvas. Salta con SPACE/UP o TAP y agáchate con DOWN.</p></header>
+            <div class="duck-runner-stage" id="duckRunnerStage" role="region" aria-label="Duck Runner en píxeles">
                 <canvas class="duck-runner-canvas" id="duckRunnerCanvas" width="900" height="220" aria-label="Escena del juego Duck Runner"></canvas>
-
-                <div class="duck-runner-overlay font-mono" id="duckRunnerOverlay">
-                    <p class="duck-runner-overlay-title" id="duckRunnerOverlayTitle">Duck Runner</p>
-                    <p class="duck-runner-overlay-hint" id="duckRunnerOverlayHint">Pulsa espacio o toca para empezar</p>
-                </div>
+                <div class="duck-runner-overlay font-mono" id="duckRunnerOverlay"><p class="duck-runner-overlay-title" id="duckRunnerOverlayTitle">Duck Runner</p><p class="duck-runner-overlay-hint" id="duckRunnerOverlayHint">Pulsa espacio o toca para empezar</p></div>
             </div>
-
-            <div class="duck-runner-hud font-mono">
-                <span>SCORE <strong id="duckRunnerScore">00000</strong></span>
-                <span>HI <strong id="duckRunnerHighScore">00000</strong></span>
-                <span>CONTROL <strong>SPACE / UP / DOWN / TAP</strong></span>
-            </div>
+            <div class="duck-runner-hud font-mono"><span>SCORE <strong id="duckRunnerScore">00000</strong></span><span>HI <strong id="duckRunnerHighScore">00000</strong></span><span>CONTROL <strong>SPACE / UP / DOWN / TAP</strong></span></div>
         </div>
     </section>
 
-    <div class="project-modal" id="projectModal" aria-hidden="true">
-        <div class="project-modal-backdrop" data-project-modal-close></div>
-
-        <section class="project-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle" aria-describedby="projectModalSubtitle">
-            <button type="button" class="project-modal-close font-mono" id="projectModalClose" data-project-modal-close>Cerrar</button>
-
-            <header class="project-modal-header">
-                <p class="project-modal-kicker font-mono" id="projectModalKicker"></p>
-                <h3 class="project-modal-title" id="projectModalTitle"></h3>
-                <p class="project-modal-subtitle" id="projectModalSubtitle"></p>
-                <div class="project-modal-tags" id="projectModalTags"></div>
-            </header>
-
-            <div class="project-modal-body">
-                <section class="project-modal-intro">
-                    <div class="project-modal-gallery" id="projectModalGallery"></div>
-
-                    <aside class="project-modal-side">
-                        <div class="project-modal-meta font-mono">
-                            <span id="projectModalStatus"></span>
-                            <span id="projectModalTimeline"></span>
-                        </div>
-
-                        <p class="project-modal-summary" id="projectModalSummary"></p>
-
-                        <h4 class="project-modal-side-title font-mono">Incluye</h4>
-                        <ul class="project-modal-deliverables" id="projectModalDeliverables"></ul>
-
-                        <div class="project-modal-actions">
-                            <a class="project-modal-btn font-mono" id="projectModalDemoLink" href="#" target="_blank" rel="noopener">Ver demo real</a>
-                            <p class="project-modal-hint" id="projectModalDemoHint"></p>
-                        </div>
-                    </aside>
-                </section>
-
-                <section class="project-modal-story" id="projectModalStoryGallery" aria-label="Galeria del proyecto"></section>
-            </div>
-        </section>
-    </div>
-
-    <script type="module" src="assets/js/main.js?v=20261019-124854"></script>
+    <script type="module" src="assets/js/main.js?v=20261019-154130"></script>
 </body>
-
 </html>

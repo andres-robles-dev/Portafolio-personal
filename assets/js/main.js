@@ -5,7 +5,6 @@ import { createTransitions } from "./modules/transitions.js";
 import { initNavigation } from "./modules/navigation.js";
 import { initReveal } from "./modules/reveal.js";
 import { initContact } from "./modules/contact.js";
-import { initProjectModal } from "./modules/projectModal.js";
 import { initDuckRunner } from "./modules/duckRunner.js";
 
 updateOverflow(state);
@@ -31,17 +30,12 @@ initContact({
     contactIntentButtons: elements.contactIntentButtons
 });
 
-initProjectModal({
-    state,
-    updateOverflow
-});
-
 initDuckRunner();
 
 initReveal(elements.revealElements);
 
 const entryTarget = new URLSearchParams(window.location.search).get("go");
-const validTargets = new Set(["home", "about", "method", "work", "contact"]);
+const validTargets = new Set(["home", "about", "method", "contact"]);
 
 if (entryTarget && validTargets.has(entryTarget)) {
     requestAnimationFrame(() => {

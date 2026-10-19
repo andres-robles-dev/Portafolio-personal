@@ -2,6 +2,8 @@
 
 Backend PHP 8.1+ para el proyecto de aprendizaje. Motor activo: `assistant-v2`; las reglas comerciales viven en `knowledge/motor.json`. No requiere base de datos. La IA real requiere cURL.
 
+La plantilla personal junior actual no consume esta API: su formulario y el chat de muestra validan o responden localmente. Este backend se conserva como ejemplo independiente de la práctica anterior; no hace falta activarlo para ver la web.
+
 ## Arranque
 
 Desde la raíz: `php -S 127.0.0.1:8081 -t . router.php`. No utilices el servidor PHP sin router ni sirvas esta carpeta con un servidor estático genérico. El servidor Node incluido bloquea la API y sirve solo frontend.

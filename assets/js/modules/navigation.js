@@ -78,9 +78,8 @@ export function initNavigation({ elements, state, updateOverflow, showSections, 
         const trackable = [
             { key: "about", element: elements.aboutSection },
             { key: "method", element: elements.experienceSection },
-            { key: "work", element: elements.projectsSection },
             { key: "contact", element: elements.contactSection }
-        ];
+        ].filter((item) => item.element);
 
         const ratios = new Map(trackable.map((item) => [item.key, 0]));
 
